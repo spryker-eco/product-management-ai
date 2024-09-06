@@ -1,0 +1,23 @@
+@mixin ai-category-selection($name: '.ai-category-selection') {
+    #{$name} {
+        position: relative;
+
+        &__btn {
+            position: absolute;
+            right: 10px;
+            bottom: 6px;
+            width: 24px;
+            height: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+        }
+
+        .select2-selection {
+            padding-right: 43px;
+        }
+    }
+}
+
+@include ai-category-selection;
