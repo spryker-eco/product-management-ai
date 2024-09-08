@@ -28,13 +28,12 @@ class AiCategorySuggestion {
     onTriggerClick(event) {
         const trigger = event.currentTarget;
 
-        this.modal = document.querySelector(`${trigger.dataset.modal}`);
+        this.modal = document.querySelector(`#${trigger.getAttribute('popovertarget')}`);
         this.fieldSelector = trigger.parentElement.querySelector(`${trigger.getAttribute('data-field-selector')}`);
 
         this.refreshElements();
 
         this.modal.classList.add(this.states.loading);
-        $(`${trigger.dataset.modal}`).modal('show');
 
         this.preparePayload(trigger.getAttribute('data-product-info-field'));
 
@@ -103,9 +102,13 @@ class AiCategorySuggestion {
     }
 
     onApply() {
-        this.fieldSelector.value = this.modal.querySelector('.js-ai-category-select').value;
+        const { selectedOptions } = this.modal.querySelector('.js-ai-category-select');
+
+        for (const option of this.fieldSelector.options) {
+            option.selected = [...selectedOptions].some(_option => _option.value === option.value);
+        }
+
         this.fieldSelector.dispatchEvent(new Event('change'));
-        $(`#${this.modal.id}`).modal('hide');
     };
 
     onAgain() {
