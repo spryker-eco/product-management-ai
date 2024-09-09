@@ -1,23 +1,29 @@
-@mixin ai-category-selection($name: '.ai-category-selection') {
-    #{$name} {
-        position: relative;
-
-        &__btn {
-            position: absolute;
-            right: 10px;
-            bottom: 6px;
-            width: 24px;
-            height: 24px;
+.ai-category-modal {
+    &.is-loading & {
+        &__loading {
             display: flex;
-            align-items: center;
             justify-content: center;
-            cursor: pointer;
-        }
-
-        .select2-selection {
-            padding-right: 43px;
+            align-items: center;
+            gap: 10px;
         }
     }
-}
 
-@include ai-category-selection;
+    &.is-empty & {
+        &__empty {
+            display: block;
+        }
+    }
+
+    &.is-empty &,
+    &.is-loading & {
+        &__actions,
+        &__select {
+            display: none;
+        }
+    }
+
+    &__loading,
+    &__empty {
+        display: none;
+    }
+}
