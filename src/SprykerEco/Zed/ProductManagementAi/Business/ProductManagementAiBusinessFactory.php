@@ -1,17 +1,14 @@
 <?php
 
 /**
- * Copyright © 2016-present Spryker Systems GmbH. All rights reserved.
- * Use of this software requires acceptance of the Evaluation License Agreement. See LICENSE file.
+ * MIT License
+ * For full license information, please view the LICENSE file that was distributed with this source code.
  */
 
 namespace SprykerEco\Zed\ProductManagementAi\Business;
 
 use Spryker\Service\UtilEncoding\UtilEncodingServiceInterface;
-use Spryker\Zed\Category\Business\CategoryFacadeInterface;
 use Spryker\Zed\Kernel\Business\AbstractBusinessFactory;
-use Spryker\Zed\Locale\Business\LocaleFacadeInterface;
-use SprykerEco\Client\OpenAi\OpenAiClientInterface;
 use SprykerEco\Zed\ProductManagementAi\Business\Builder\PromptBuilder;
 use SprykerEco\Zed\ProductManagementAi\Business\Builder\PromptBuilderInterface;
 use SprykerEco\Zed\ProductManagementAi\Business\Category\CategoryProposer;
@@ -20,6 +17,9 @@ use SprykerEco\Zed\ProductManagementAi\Business\Category\CategoryReader;
 use SprykerEco\Zed\ProductManagementAi\Business\Category\CategoryReaderInterface;
 use SprykerEco\Zed\ProductManagementAi\Business\Generator\ImageAltTextGenerator;
 use SprykerEco\Zed\ProductManagementAi\Business\Generator\ImageAltTextGeneratorInterface;
+use SprykerEco\Zed\ProductManagementAi\Dependency\Client\ProductManagementAiToOpenAiClientInterface;
+use SprykerEco\Zed\ProductManagementAi\Dependency\Facade\ProductManagementAiToCategoryFacadeInterface;
+use SprykerEco\Zed\ProductManagementAi\Dependency\Facade\ProductManagementAiToLocaleFacadeInterface;
 use SprykerEco\Zed\ProductManagementAi\ProductManagementAiDependencyProvider;
 
 /**
@@ -71,17 +71,17 @@ class ProductManagementAiBusinessFactory extends AbstractBusinessFactory
     }
 
     /**
-     * @return \Spryker\Zed\Category\Business\CategoryFacadeInterface
+     * @return \SprykerEco\Zed\ProductManagementAi\Dependency\Facade\ProductManagementAiToCategoryFacadeInterface
      */
-    public function getCategoryFacade(): CategoryFacadeInterface
+    public function getCategoryFacade(): ProductManagementAiToCategoryFacadeInterface
     {
         return $this->getProvidedDependency(ProductManagementAiDependencyProvider::FACADE_CATEGORY);
     }
 
     /**
-     * @return \Spryker\Zed\Locale\Business\LocaleFacadeInterface
+     * @return \SprykerEco\Zed\ProductManagementAi\Dependency\Facade\ProductManagementAiToLocaleFacadeInterface
      */
-    public function getLocaleFacade(): LocaleFacadeInterface
+    public function getLocaleFacade(): ProductManagementAiToLocaleFacadeInterface
     {
         return $this->getProvidedDependency(ProductManagementAiDependencyProvider::FACADE_LOCALE);
     }
@@ -95,9 +95,9 @@ class ProductManagementAiBusinessFactory extends AbstractBusinessFactory
     }
 
     /**
-     * @return \SprykerEco\Client\OpenAi\OpenAiClientInterface
+     * @return \SprykerEco\Zed\ProductManagementAi\Dependency\Client\ProductManagementAiToOpenAiClientInterface
      */
-    public function getOpenAiClient(): OpenAiClientInterface
+    public function getOpenAiClient(): ProductManagementAiToOpenAiClientInterface
     {
         return $this->getProvidedDependency(ProductManagementAiDependencyProvider::CLIENT_OPEN_AI);
     }

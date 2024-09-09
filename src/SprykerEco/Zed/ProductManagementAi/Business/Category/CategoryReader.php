@@ -1,34 +1,34 @@
 <?php
 
 /**
- * Copyright © 2016-present Spryker Systems GmbH. All rights reserved.
- * Use of this software requires acceptance of the Evaluation License Agreement. See LICENSE file.
+ * MIT License
+ * For full license information, please view the LICENSE file that was distributed with this source code.
  */
 
 namespace SprykerEco\Zed\ProductManagementAi\Business\Category;
 
-use Spryker\Zed\Category\Business\CategoryFacadeInterface;
-use Spryker\Zed\Locale\Business\LocaleFacadeInterface;
+use SprykerEco\Zed\ProductManagementAi\Dependency\Facade\ProductManagementAiToCategoryFacadeInterface;
+use SprykerEco\Zed\ProductManagementAi\Dependency\Facade\ProductManagementAiToLocaleFacadeInterface;
 
 class CategoryReader implements CategoryReaderInterface
 {
     /**
-     * @var \Spryker\Zed\Category\Business\CategoryFacadeInterface
+     * @var \SprykerEco\Zed\ProductManagementAi\Dependency\Facade\ProductManagementAiToCategoryFacadeInterface
      */
-    protected CategoryFacadeInterface $categoryFacade;
+    protected ProductManagementAiToCategoryFacadeInterface $categoryFacade;
 
     /**
-     * @var \Spryker\Zed\Locale\Business\LocaleFacadeInterface
+     * @var \SprykerEco\Zed\ProductManagementAi\Dependency\Facade\ProductManagementAiToLocaleFacadeInterface
      */
-    protected LocaleFacadeInterface $localeFacade;
+    protected ProductManagementAiToLocaleFacadeInterface $localeFacade;
 
     /**
-     * @param \Spryker\Zed\Category\Business\CategoryFacadeInterface $categoryFacade
-     * @param \Spryker\Zed\Locale\Business\LocaleFacadeInterface $localeFacade
+     * @param \SprykerEco\Zed\ProductManagementAi\Dependency\Facade\ProductManagementAiToCategoryFacadeInterface $categoryFacade
+     * @param \SprykerEco\Zed\ProductManagementAi\Dependency\Facade\ProductManagementAiToLocaleFacadeInterface $localeFacade
      */
     public function __construct(
-        CategoryFacadeInterface $categoryFacade,
-        LocaleFacadeInterface $localeFacade
+        ProductManagementAiToCategoryFacadeInterface $categoryFacade,
+        ProductManagementAiToLocaleFacadeInterface $localeFacade
     ) {
         $this->categoryFacade = $categoryFacade;
         $this->localeFacade = $localeFacade;
@@ -44,7 +44,7 @@ class CategoryReader implements CategoryReaderInterface
 
         $categories = [];
         foreach ($categoryCollectionTransfer->getCategories() as $categoryTransfer) {
-            $categories[$categoryTransfer->getName()] = $categoryTransfer->getIdCategory();
+            $categories[$categoryTransfer->getName()] = $categoryTransfer->getIdCategoryOrFail();
         }
 
         return $categories;

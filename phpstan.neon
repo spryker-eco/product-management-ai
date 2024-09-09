@@ -1,3 +1,9 @@
 parameters:
     level: 8
-    checkGenericClassInNonGenericObjectType: false
+    paths:
+        - src/
+    ignoreErrors:
+        - '#Call to method .+ on an unknown class .+Transfer#'
+        - '#Parameter .+ of method .+ has invalid typehint type .+Transfer#'
+        - '#Return typehint of method .+ has invalid type .+Transfer#'
+        - '#Instantiated class .+Transfer not found#'

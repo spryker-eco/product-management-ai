@@ -1,24 +1,24 @@
 <?php
 
 /**
- * Copyright © 2016-present Spryker Systems GmbH. All rights reserved.
- * Use of this software requires acceptance of the Evaluation License Agreement. See LICENSE file.
+ * MIT License
+ * For full license information, please view the LICENSE file that was distributed with this source code.
  */
 
 namespace SprykerEco\Zed\ProductManagementAi\Business\Generator;
 
 use Generated\Shared\Transfer\OpenAiChatRequestTransfer;
 use Generated\Shared\Transfer\OpenAiChatResponseTransfer;
-use SprykerEco\Client\OpenAi\OpenAiClientInterface;
 use SprykerEco\Zed\ProductManagementAi\Business\Builder\PromptBuilderInterface;
+use SprykerEco\Zed\ProductManagementAi\Dependency\Client\ProductManagementAiToOpenAiClientInterface;
 use SprykerEco\Zed\ProductManagementAi\ProductManagementAiConfig;
 
 class ImageAltTextGenerator implements ImageAltTextGeneratorInterface
 {
     /**
-     * @var \SprykerEco\Client\OpenAi\OpenAiClientInterface
+     * @var \SprykerEco\Zed\ProductManagementAi\Dependency\Client\ProductManagementAiToOpenAiClientInterface
      */
-    protected OpenAiClientInterface $openAiClient;
+    protected ProductManagementAiToOpenAiClientInterface $openAiClient;
 
     /**
      * @var \SprykerEco\Zed\ProductManagementAi\Business\Builder\PromptBuilderInterface
@@ -31,12 +31,12 @@ class ImageAltTextGenerator implements ImageAltTextGeneratorInterface
     protected ProductManagementAiConfig $productManagementAiConfig;
 
     /**
-     * @param \SprykerEco\Client\OpenAi\OpenAiClientInterface $openAiClient
+     * @param \SprykerEco\Zed\ProductManagementAi\Dependency\Client\ProductManagementAiToOpenAiClientInterface $openAiClient
      * @param \SprykerEco\Zed\ProductManagementAi\Business\Builder\PromptBuilderInterface $promptBuilder
      * @param \SprykerEco\Zed\ProductManagementAi\ProductManagementAiConfig $productManagementAiConfig
      */
     public function __construct(
-        OpenAiClientInterface $openAiClient,
+        ProductManagementAiToOpenAiClientInterface $openAiClient,
         PromptBuilderInterface $promptBuilder,
         ProductManagementAiConfig $productManagementAiConfig
     ) {

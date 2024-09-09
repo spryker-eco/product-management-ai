@@ -1,8 +1,8 @@
 <?php
 
 /**
- * Copyright © 2016-present Spryker Systems GmbH. All rights reserved.
- * Use of this software requires acceptance of the Evaluation License Agreement. See LICENSE file.
+ * MIT License
+ * For full license information, please view the LICENSE file that was distributed with this source code.
  */
 
 namespace SprykerEco\Zed\ProductManagementAi\Communication\Plugin\ProductManagement;
@@ -39,16 +39,6 @@ class ImageAltTextProductAbstractFormExpanderPlugin extends AbstractPlugin imple
     protected const SUBFORM_IMAGE_COLLECTION = 'product_images';
 
     /**
-     * @param \Generated\Shared\Transfer\LocaleTransfer $localeTransfer
-     *
-     * @return string
-     */
-    protected function getLocalizedImageSetFormName(LocaleTransfer $localeTransfer): string
-    {
-        return static::SUBFORM_IMAGE_SET_PREFIX . $localeTransfer->getLocaleName();
-    }
-
-    /**
      * {@inheritDoc}
      *
      * @api
@@ -76,7 +66,6 @@ class ImageAltTextProductAbstractFormExpanderPlugin extends AbstractPlugin imple
             FormEvents::POST_SET_DATA,
             function (FormEvent $event): void {
                 $form = $event->getForm();
-                $data = $event->getData();
 
                 $localeCollection = $this->getFactory()->getLocaleFacade()->getLocaleCollection();
                 $localeCollection[] = (new LocaleTransfer())->setLocaleName('default');
@@ -94,9 +83,10 @@ class ImageAltTextProductAbstractFormExpanderPlugin extends AbstractPlugin imple
                                 'constraints' => [
                                     new Length([
                                         'min' => 0,
-                                        'max' => 2048,
+                                        'max' => 255,
                                     ]),
                                 ],
+                                'sanitize_xss' => true,
                             ]);
                         }
                     }
@@ -105,5 +95,15 @@ class ImageAltTextProductAbstractFormExpanderPlugin extends AbstractPlugin imple
         );
 
         return $builder;
+    }
+
+    /**
+     * @param \Generated\Shared\Transfer\LocaleTransfer $localeTransfer
+     *
+     * @return string
+     */
+    protected function getLocalizedImageSetFormName(LocaleTransfer $localeTransfer): string
+    {
+        return static::SUBFORM_IMAGE_SET_PREFIX . $localeTransfer->getLocaleName();
     }
 }

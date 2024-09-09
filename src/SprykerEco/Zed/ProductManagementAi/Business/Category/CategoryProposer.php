@@ -1,15 +1,15 @@
 <?php
 
 /**
- * Copyright © 2016-present Spryker Systems GmbH. All rights reserved.
- * Use of this software requires acceptance of the Evaluation License Agreement. See LICENSE file.
+ * MIT License
+ * For full license information, please view the LICENSE file that was distributed with this source code.
  */
 
 namespace SprykerEco\Zed\ProductManagementAi\Business\Category;
 
 use Generated\Shared\Transfer\OpenAiChatRequestTransfer;
 use Spryker\Service\UtilEncoding\UtilEncodingServiceInterface;
-use SprykerEco\Client\OpenAi\OpenAiClientInterface;
+use SprykerEco\Zed\ProductManagementAi\Dependency\Client\ProductManagementAiToOpenAiClientInterface;
 
 class CategoryProposer implements CategoryProposerInterface
 {
@@ -25,9 +25,9 @@ class CategoryProposer implements CategoryProposerInterface
         Provide only the suggested categories as your output as key and value';
 
     /**
-     * @var \SprykerEco\Client\OpenAi\OpenAiClientInterface
+     * @var \SprykerEco\Zed\ProductManagementAi\Dependency\Client\ProductManagementAiToOpenAiClientInterface
      */
-    protected OpenAiClientInterface $openAiClient;
+    protected ProductManagementAiToOpenAiClientInterface $openAiClient;
 
     /**
      * @var \Spryker\Service\UtilEncoding\UtilEncodingServiceInterface
@@ -40,12 +40,12 @@ class CategoryProposer implements CategoryProposerInterface
     protected CategoryReaderInterface $categoryReader;
 
     /**
-     * @param \SprykerEco\Client\OpenAi\OpenAiClientInterface $openAiClient
+     * @param \SprykerEco\Zed\ProductManagementAi\Dependency\Client\ProductManagementAiToOpenAiClientInterface $openAiClient
      * @param \Spryker\Service\UtilEncoding\UtilEncodingServiceInterface $utilEncodingService
      * @param \SprykerEco\Zed\ProductManagementAi\Business\Category\CategoryReaderInterface $categoryReader
      */
     public function __construct(
-        OpenAiClientInterface $openAiClient,
+        ProductManagementAiToOpenAiClientInterface $openAiClient,
         UtilEncodingServiceInterface $utilEncodingService,
         CategoryReaderInterface $categoryReader
     ) {
@@ -70,10 +70,9 @@ class CategoryProposer implements CategoryProposerInterface
         $openAiChatRequestTransfer = (new OpenAiChatRequestTransfer())
             ->setMessage($this->generatePrompt($productName, $description, $categories));
 
-        /** @var \Generated\Shared\Transfer\OpenAiChatResponseTransfer $openAiChatResponseTransfer */
         $openAiChatResponseTransfer = $this->openAiClient->chat($openAiChatRequestTransfer);
 
-        if (empty($openAiChatResponseTransfer->getMessage())) {
+        if (!$openAiChatResponseTransfer->getMessage()) {
             return [];
         }
 

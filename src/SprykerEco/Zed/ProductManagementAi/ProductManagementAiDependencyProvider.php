@@ -1,16 +1,17 @@
 <?php
 
 /**
- * Copyright © 2016-present Spryker Systems GmbH. All rights reserved.
- * Use of this software requires acceptance of the Evaluation License Agreement. See LICENSE file.
+ * MIT License
+ * For full license information, please view the LICENSE file that was distributed with this source code.
  */
-
-declare(strict_types=1);
 
 namespace SprykerEco\Zed\ProductManagementAi;
 
 use Spryker\Zed\Kernel\AbstractBundleDependencyProvider;
 use Spryker\Zed\Kernel\Container;
+use SprykerEco\Zed\ProductManagementAi\Dependency\Client\ProductManagementAiToOpenAiClientBridge;
+use SprykerEco\Zed\ProductManagementAi\Dependency\Facade\ProductManagementAiToCategoryFacadeBridge;
+use SprykerEco\Zed\ProductManagementAi\Dependency\Facade\ProductManagementAiToLocaleFacadeBridge;
 
 /**
  * @method \SprykerEco\Zed\ProductManagementAi\ProductManagementAiConfig getConfig()
@@ -73,7 +74,7 @@ class ProductManagementAiDependencyProvider extends AbstractBundleDependencyProv
     protected function addCategoryFacade(Container $container): Container
     {
         $container->set(static::FACADE_CATEGORY, function (Container $container) {
-            return $container->getLocator()->category()->facade();
+            return new ProductManagementAiToCategoryFacadeBridge($container->getLocator()->category()->facade());
         });
 
         return $container;
@@ -87,7 +88,7 @@ class ProductManagementAiDependencyProvider extends AbstractBundleDependencyProv
     protected function addLocaleFacade(Container $container): Container
     {
         $container->set(static::FACADE_LOCALE, function (Container $container) {
-            return $container->getLocator()->locale()->facade();
+            return new ProductManagementAiToLocaleFacadeBridge($container->getLocator()->locale()->facade());
         });
 
         return $container;
@@ -115,7 +116,7 @@ class ProductManagementAiDependencyProvider extends AbstractBundleDependencyProv
     protected function addOpenAiClient(Container $container): Container
     {
         $container->set(static::CLIENT_OPEN_AI, function (Container $container) {
-            return $container->getLocator()->openAi()->client();
+            return new ProductManagementAiToOpenAiClientBridge($container->getLocator()->openAi()->client());
         });
 
         return $container;
