@@ -7,6 +7,7 @@
 
 namespace SprykerEco\Zed\ProductManagementAi\Business;
 
+use Generated\Shared\Transfer\OpenAiChatResponseTransfer;
 use Spryker\Zed\Kernel\Business\AbstractFacade;
 
 /**
@@ -29,5 +30,22 @@ class ProductManagementAiFacade extends AbstractFacade implements ProductManagem
         return $this->getFactory()
             ->createCategoryProposer()
             ->proposeCategorySuggestions($productName, $description);
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @api
+     *
+     * @param string $imageUrl
+     * @param string $targetLocale
+     *
+     * @return \Generated\Shared\Transfer\OpenAiChatResponseTransfer
+     */
+    public function generateImageAltText(string $imageUrl, string $targetLocale): OpenAiChatResponseTransfer
+    {
+        return $this->getFactory()
+            ->createImageAltTextGenerator()
+            ->generateImageAltText($imageUrl, $targetLocale);
     }
 }

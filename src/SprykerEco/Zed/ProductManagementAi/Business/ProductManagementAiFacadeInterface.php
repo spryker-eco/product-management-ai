@@ -7,6 +7,8 @@
 
 namespace SprykerEco\Zed\ProductManagementAi\Business;
 
+use Generated\Shared\Transfer\OpenAiChatResponseTransfer;
+
 interface ProductManagementAiFacadeInterface
 {
     /**
@@ -21,4 +23,17 @@ interface ProductManagementAiFacadeInterface
      * @return array<string, int>
      */
     public function proposeCategorySuggestions(string $productName, string $description): array;
+
+    /**
+     * Specification:
+     *  - Generates alt text for an image using AI.
+     *
+     * @api
+     *
+     * @param string $imageUrl
+     * @param string $targetLocale
+     *
+     * @return \Generated\Shared\Transfer\OpenAiChatResponseTransfer
+     */
+    public function generateImageAltText(string $imageUrl, string $targetLocale): OpenAiChatResponseTransfer;
 }

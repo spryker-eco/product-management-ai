@@ -12,10 +12,14 @@ use Spryker\Zed\Category\Business\CategoryFacadeInterface;
 use Spryker\Zed\Kernel\Business\AbstractBusinessFactory;
 use Spryker\Zed\Locale\Business\LocaleFacadeInterface;
 use SprykerEco\Client\OpenAi\OpenAiClientInterface;
+use SprykerEco\Zed\ProductManagementAi\Business\Builder\PromptBuilder;
+use SprykerEco\Zed\ProductManagementAi\Business\Builder\PromptBuilderInterface;
 use SprykerEco\Zed\ProductManagementAi\Business\Category\CategoryProposer;
 use SprykerEco\Zed\ProductManagementAi\Business\Category\CategoryProposerInterface;
 use SprykerEco\Zed\ProductManagementAi\Business\Category\CategoryReader;
 use SprykerEco\Zed\ProductManagementAi\Business\Category\CategoryReaderInterface;
+use SprykerEco\Zed\ProductManagementAi\Business\Generator\ImageAltTextGenerator;
+use SprykerEco\Zed\ProductManagementAi\Business\Generator\ImageAltTextGeneratorInterface;
 use SprykerEco\Zed\ProductManagementAi\ProductManagementAiDependencyProvider;
 
 /**
@@ -40,10 +44,30 @@ class ProductManagementAiBusinessFactory extends AbstractBusinessFactory
     public function createCategoryProposer(): CategoryProposerInterface
     {
         return new CategoryProposer(
-            $this->getOpenAiClientClient(),
+            $this->getOpenAiClient(),
             $this->getUtilEncodingService(),
             $this->createCategoryReader(),
         );
+    }
+
+    /**
+     * @return \SprykerEco\Zed\ProductManagementAi\Business\Generator\ImageAltTextGeneratorInterface
+     */
+    public function createImageAltTextGenerator(): ImageAltTextGeneratorInterface
+    {
+        return new ImageAltTextGenerator(
+            $this->getOpenAiClient(),
+            $this->createPromptBuilder(),
+            $this->getConfig(),
+        );
+    }
+
+    /**
+     * @return \SprykerEco\Zed\ProductManagementAi\Business\Builder\PromptBuilderInterface
+     */
+    public function createPromptBuilder(): PromptBuilderInterface
+    {
+        return new PromptBuilder($this->getConfig());
     }
 
     /**
@@ -73,7 +97,7 @@ class ProductManagementAiBusinessFactory extends AbstractBusinessFactory
     /**
      * @return \SprykerEco\Client\OpenAi\OpenAiClientInterface
      */
-    public function getOpenAiClientClient(): OpenAiClientInterface
+    public function getOpenAiClient(): OpenAiClientInterface
     {
         return $this->getProvidedDependency(ProductManagementAiDependencyProvider::CLIENT_OPEN_AI);
     }
