@@ -28,7 +28,7 @@ class AiCategorySuggestion {
     onTriggerClick(event) {
         const trigger = event.currentTarget;
 
-        this.modal = document.querySelector(`#${trigger.getAttribute('popovertarget')}`);
+        this.modal = document.getElementById(trigger.getAttribute('popovertarget'));
         this.fieldSelector = trigger.parentElement.querySelector(`${trigger.getAttribute('data-field-selector')}`);
 
         this.refreshElements();
@@ -48,8 +48,7 @@ class AiCategorySuggestion {
     }
 
     refreshElements() {
-        this.modal.classList.remove(this.states.loading);
-        this.modal.classList.remove(this.states.empty);
+        this.modal.classList.remove(this.states.loading, this.states.empty);
         this.modal.querySelector('.js-ai-category-apply').removeEventListener('click', this.onApply);
         this.modal.querySelector('.js-ai-category-again').removeEventListener('click', this.onAgain);
 
