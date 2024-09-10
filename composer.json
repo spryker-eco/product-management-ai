@@ -4,11 +4,24 @@
     "description": "ProductManagementAi module",
     "license": "MIT",
     "require": {
-        "php": ">=8.1"
+        "php": ">=8.1",
+        "spryker-eco/open-ai": "^1.0.0",
+        "spryker/category": "^5.0.0",
+        "spryker/gui": "^3.45.0",
+        "spryker/kernel": "^3.33.0",
+        "spryker/locale": "^4.0.0",
+        "spryker/product-extension": "^1.1.0",
+        "spryker/product-management-extension": "^1.2.0",
+        "spryker/symfony": "^3.0.0",
+        "spryker/transfer": "^3.27.0",
+        "spryker/util-encoding": "^2.0.0"
     },
     "require-dev": {
         "phpstan/phpstan": "*",
-        "spryker/code-sniffer": "*"
+        "spryker/code-sniffer": "*",
+        "spryker/product": "*",
+        "spryker/product-category": "*",
+        "spryker/propel-orm": "*"
     },
     "autoload": {
         "psr-4": {
@@ -33,5 +46,10 @@
         "allow-plugins": {
             "dealerdirect/phpcodesniffer-composer-installer": true
         }
+    },
+    "suggest": {
+        "spryker/product": "ADD SUGGEST DESCRIPTION",
+        "spryker/product-category": "ADD SUGGEST DESCRIPTION",
+        "spryker/propel-orm": "Used for Propel schema generation."
     }
 }

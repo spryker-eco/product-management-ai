@@ -59,6 +59,7 @@ class ProductCategoryProductAbstractAfterUpdatePlugin extends AbstractPlugin imp
      */
     protected function getProductCategoryIds(int $idProductAbstract): array
     {
+        // Use Facade
         return SpyProductCategoryQuery::create()
             ->filterByFkProductAbstract($idProductAbstract)
             ->select(SpyProductCategoryTableMap::COL_FK_CATEGORY)

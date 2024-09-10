@@ -7,7 +7,6 @@
 
 namespace SprykerEco\Zed\ProductManagementAi\Business;
 
-use Spryker\Service\UtilEncoding\UtilEncodingServiceInterface;
 use Spryker\Zed\Kernel\Business\AbstractBusinessFactory;
 use SprykerEco\Zed\ProductManagementAi\Business\Builder\PromptBuilder;
 use SprykerEco\Zed\ProductManagementAi\Business\Builder\PromptBuilderInterface;
@@ -20,6 +19,7 @@ use SprykerEco\Zed\ProductManagementAi\Business\Generator\ImageAltTextGeneratorI
 use SprykerEco\Zed\ProductManagementAi\Dependency\Client\ProductManagementAiToOpenAiClientInterface;
 use SprykerEco\Zed\ProductManagementAi\Dependency\Facade\ProductManagementAiToCategoryFacadeInterface;
 use SprykerEco\Zed\ProductManagementAi\Dependency\Facade\ProductManagementAiToLocaleFacadeInterface;
+use SprykerEco\Zed\ProductManagementAi\Dependency\Service\ProductManagementAiToUtilEncodingServiceInterface;
 use SprykerEco\Zed\ProductManagementAi\ProductManagementAiDependencyProvider;
 
 /**
@@ -87,9 +87,9 @@ class ProductManagementAiBusinessFactory extends AbstractBusinessFactory
     }
 
     /**
-     * @return \Spryker\Service\UtilEncoding\UtilEncodingServiceInterface
+     * @return \SprykerEco\Zed\ProductManagementAi\Dependency\Service\ProductManagementAiToUtilEncodingServiceInterface
      */
-    public function getUtilEncodingService(): UtilEncodingServiceInterface
+    public function getUtilEncodingService(): ProductManagementAiToUtilEncodingServiceInterface
     {
         return $this->getProvidedDependency(ProductManagementAiDependencyProvider::SERVICE_UTIL_ENCODING);
     }

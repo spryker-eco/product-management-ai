@@ -8,8 +8,8 @@
 namespace SprykerEco\Zed\ProductManagementAi\Business\Category;
 
 use Generated\Shared\Transfer\OpenAiChatRequestTransfer;
-use Spryker\Service\UtilEncoding\UtilEncodingServiceInterface;
 use SprykerEco\Zed\ProductManagementAi\Dependency\Client\ProductManagementAiToOpenAiClientInterface;
+use SprykerEco\Zed\ProductManagementAi\Dependency\Service\ProductManagementAiToUtilEncodingServiceInterface;
 
 class CategoryProposer implements CategoryProposerInterface
 {
@@ -30,9 +30,9 @@ class CategoryProposer implements CategoryProposerInterface
     protected ProductManagementAiToOpenAiClientInterface $openAiClient;
 
     /**
-     * @var \Spryker\Service\UtilEncoding\UtilEncodingServiceInterface
+     * @var \SprykerEco\Zed\ProductManagementAi\Dependency\Service\ProductManagementAiToUtilEncodingServiceInterface
      */
-    protected UtilEncodingServiceInterface $utilEncodingService;
+    protected ProductManagementAiToUtilEncodingServiceInterface $utilEncodingService;
 
     /**
      * @var \SprykerEco\Zed\ProductManagementAi\Business\Category\CategoryReaderInterface
@@ -41,12 +41,12 @@ class CategoryProposer implements CategoryProposerInterface
 
     /**
      * @param \SprykerEco\Zed\ProductManagementAi\Dependency\Client\ProductManagementAiToOpenAiClientInterface $openAiClient
-     * @param \Spryker\Service\UtilEncoding\UtilEncodingServiceInterface $utilEncodingService
+     * @param \SprykerEco\Zed\ProductManagementAi\Dependency\Service\ProductManagementAiToUtilEncodingServiceInterface $utilEncodingService
      * @param \SprykerEco\Zed\ProductManagementAi\Business\Category\CategoryReaderInterface $categoryReader
      */
     public function __construct(
         ProductManagementAiToOpenAiClientInterface $openAiClient,
-        UtilEncodingServiceInterface $utilEncodingService,
+        ProductManagementAiToUtilEncodingServiceInterface $utilEncodingService,
         CategoryReaderInterface $categoryReader
     ) {
         $this->openAiClient = $openAiClient;

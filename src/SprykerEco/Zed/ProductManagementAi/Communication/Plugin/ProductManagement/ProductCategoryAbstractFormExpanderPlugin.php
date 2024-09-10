@@ -81,6 +81,7 @@ class ProductCategoryAbstractFormExpanderPlugin extends AbstractPlugin implement
     protected function getProductCategoryIds(int $idProductAbstract): array
     {
         $currentLocaleId = $this->getFactory()->getLocaleFacade()->getCurrentLocale()->getIdLocale();
+        // Use Facade
         $categoryCollection = SpyCategoryQuery::create()
             ->joinAttribute()
             ->innerJoinNode()

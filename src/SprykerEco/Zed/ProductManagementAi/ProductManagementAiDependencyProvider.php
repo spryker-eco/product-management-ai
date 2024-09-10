@@ -12,6 +12,7 @@ use Spryker\Zed\Kernel\Container;
 use SprykerEco\Zed\ProductManagementAi\Dependency\Client\ProductManagementAiToOpenAiClientBridge;
 use SprykerEco\Zed\ProductManagementAi\Dependency\Facade\ProductManagementAiToCategoryFacadeBridge;
 use SprykerEco\Zed\ProductManagementAi\Dependency\Facade\ProductManagementAiToLocaleFacadeBridge;
+use SprykerEco\Zed\ProductManagementAi\Dependency\Service\ProductManagementAiToUtilEncodingServiceBridge;
 
 /**
  * @method \SprykerEco\Zed\ProductManagementAi\ProductManagementAiConfig getConfig()
@@ -102,7 +103,7 @@ class ProductManagementAiDependencyProvider extends AbstractBundleDependencyProv
     protected function addUtilEncodingService(Container $container): Container
     {
         $container->set(static::SERVICE_UTIL_ENCODING, function (Container $container) {
-            return $container->getLocator()->utilEncoding()->service();
+            return new ProductManagementAiToUtilEncodingServiceBridge($container->getLocator()->utilEncoding()->service());
         });
 
         return $container;
