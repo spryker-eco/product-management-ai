@@ -8,6 +8,8 @@
 namespace SprykerEco\Zed\ProductManagementAi\Communication;
 
 use Spryker\Zed\Kernel\Communication\AbstractCommunicationFactory;
+use SprykerEco\Zed\ProductManagementAi\Communication\Expander\ImageAltTextProductFormExpander;
+use SprykerEco\Zed\ProductManagementAi\Communication\Expander\ImageAltTextProductFormExpanderInterface;
 use SprykerEco\Zed\ProductManagementAi\Communication\Form\DataProvider\ProductCategoryAbstractFormDataProvider;
 use SprykerEco\Zed\ProductManagementAi\Dependency\Facade\ProductManagementAiToCategoryFacadeInterface;
 use SprykerEco\Zed\ProductManagementAi\Dependency\Facade\ProductManagementAiToLocaleFacadeInterface;
@@ -26,6 +28,16 @@ class ProductManagementAiCommunicationFactory extends AbstractCommunicationFacto
     {
         return new ProductCategoryAbstractFormDataProvider(
             $this->getCategoryFacade(),
+            $this->getLocaleFacade(),
+        );
+    }
+
+    /**
+     * @return \SprykerEco\Zed\ProductManagementAi\Communication\Expander\ImageAltTextProductFormExpanderInterface
+     */
+    public function createImageAltTextProductFormExpander(): ImageAltTextProductFormExpanderInterface
+    {
+        return new ImageAltTextProductFormExpander(
             $this->getLocaleFacade(),
         );
     }

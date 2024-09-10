@@ -8,7 +8,6 @@
 namespace SprykerEco\Zed\ProductManagementAi\Communication\Plugin\ProductManagement;
 
 use Spryker\Zed\Kernel\Communication\AbstractPlugin;
-use Spryker\Zed\ProductManagementExtension\Dependency\Plugin\ProductAbstractFormExpanderPluginInterface;
 use Spryker\Zed\ProductManagementExtension\Dependency\Plugin\ProductConcreteFormExpanderPluginInterface;
 use Symfony\Component\Form\FormBuilderInterface;
 
@@ -17,7 +16,7 @@ use Symfony\Component\Form\FormBuilderInterface;
  * @method \SprykerEco\Zed\ProductManagementAi\Business\ProductManagementAiFacadeInterface getFacade()
  * @method \SprykerEco\Zed\ProductManagementAi\Communication\ProductManagementAiCommunicationFactory getFactory()
  */
-class ImageAltTextProductAbstractFormExpanderPlugin extends AbstractPlugin implements ProductAbstractFormExpanderPluginInterface, ProductConcreteFormExpanderPluginInterface
+class ImageAltTextProductConcreteFormExpanderPlugin extends AbstractPlugin implements ProductConcreteFormExpanderPluginInterface
 {
     /**
      * {@inheritDoc}

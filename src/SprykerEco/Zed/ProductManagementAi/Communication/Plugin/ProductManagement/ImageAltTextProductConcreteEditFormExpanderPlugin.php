@@ -8,8 +8,7 @@
 namespace SprykerEco\Zed\ProductManagementAi\Communication\Plugin\ProductManagement;
 
 use Spryker\Zed\Kernel\Communication\AbstractPlugin;
-use Spryker\Zed\ProductManagementExtension\Dependency\Plugin\ProductAbstractFormExpanderPluginInterface;
-use Spryker\Zed\ProductManagementExtension\Dependency\Plugin\ProductConcreteFormExpanderPluginInterface;
+use Spryker\Zed\ProductManagementExtension\Dependency\Plugin\ProductConcreteEditFormExpanderPluginInterface;
 use Symfony\Component\Form\FormBuilderInterface;
 
 /**
@@ -17,7 +16,7 @@ use Symfony\Component\Form\FormBuilderInterface;
  * @method \SprykerEco\Zed\ProductManagementAi\Business\ProductManagementAiFacadeInterface getFacade()
  * @method \SprykerEco\Zed\ProductManagementAi\Communication\ProductManagementAiCommunicationFactory getFactory()
  */
-class ImageAltTextProductAbstractFormExpanderPlugin extends AbstractPlugin implements ProductAbstractFormExpanderPluginInterface, ProductConcreteFormExpanderPluginInterface
+class ImageAltTextProductConcreteEditFormExpanderPlugin extends AbstractPlugin implements ProductConcreteEditFormExpanderPluginInterface
 {
     /**
      * {@inheritDoc}
@@ -27,14 +26,12 @@ class ImageAltTextProductAbstractFormExpanderPlugin extends AbstractPlugin imple
      * @param \Symfony\Component\Form\FormBuilderInterface $builder
      * @param array<string, mixed> $options
      *
-     * @return \Symfony\Component\Form\FormBuilderInterface
+     * @return void
      */
-    public function expand(FormBuilderInterface $builder, array $options): FormBuilderInterface
+    public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $this->getFactory()
             ->createImageAltTextProductFormExpander()
             ->expand($builder, $options);
-
-        return $builder;
     }
 }
