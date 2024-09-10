@@ -2,6 +2,7 @@ import { AiProductManagement } from './ai-product-management';
 
 export class AiImageAltText extends AiProductManagement {
     trigger = '.js-ai-alt-image-trigger';
+
     preparePayload(trigger) {
         const inputLocale = this.fieldSelector.name.split('[')[1].split(']')[0].replace('image_set_', '');
         const patterns = JSON.parse(trigger.getAttribute('data-product-field-pattern'));
