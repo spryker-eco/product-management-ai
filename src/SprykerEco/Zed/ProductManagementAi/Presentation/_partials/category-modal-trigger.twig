@@ -1,17 +1,17 @@
 {% set fieldSelector = '.js-ai-categories select' %}
 
 {% block body %}
-	<div class="form-wrapper-clickable-affix">
-		{% block input %}
-			{{ form_row(form.categoryIds, {
+    <div class="form-wrapper-clickable-affix">
+        {% block input %}
+            {{ form_row(form.categoryIds, {
                 row_attr: { class: 'js-ai-categories' }
             }) }}
-		{% endblock %}
+        {% endblock %}
 
-		{% block trigger %}
-			<button type="button" data-url="/product-management-ai/category-suggestion" data-product-info-field=".js-infomational-field" data-field-selector="{{ fieldSelector }}" popovertarget="ai-category-modal" class="form-wrapper-clickable-affix__button js-ai-category-trigger btn-naked" title="{{ 'AI assistant' | trans }}">
-				<span class="fa fa-magic"></span>
-			</button>
-		{% endblock %}
-	</div>
+        {% block trigger %}
+            <button type="button" data-url="/product-management-ai/category-suggestion" data-product-info-field=".js-infomational-field" data-field-selector="{{ fieldSelector }}" popovertarget="ai-category-modal" class="form-wrapper-clickable-affix__button js-ai-category-trigger btn-naked" title="{{ 'AI assistant' | trans }}">
+                <span class="fa fa-magic"></span>
+            </button>
+        {% endblock %}
+    </div>
 {% endblock %}

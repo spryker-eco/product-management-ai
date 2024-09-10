@@ -11,7 +11,7 @@ export class AiProductManagement {
 
     data = null;
     modal = null;
-    fieldSelector = null;
+    fieldElement = null;
     triggerSelector = null;
     url = null;
 
@@ -25,7 +25,7 @@ export class AiProductManagement {
         const trigger = event.currentTarget;
 
         this.modal = document.getElementById(trigger.getAttribute('popovertarget'));
-        this.fieldSelector = trigger.parentElement.querySelector(`${trigger.getAttribute('data-field-selector')}`);
+        this.fieldElement = trigger.parentElement.querySelector(`${trigger.getAttribute('data-field-selector')}`);
         this.url = trigger.dataset.url;
 
         this.refreshElements();

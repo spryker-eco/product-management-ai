@@ -1,52 +1,52 @@
 {% block body %}
-	<dialog popover id="{{ id }}" class="ai-product-management-modal modal-popover">
-		{% block modal %}
-			<div class="modal">
-				<div class="modal-dialog">
-					<div class="modal-content">
-						{% block header %}
-							<div class="modal-header">
-								<button type="button" class="close" popovertarget="{{ id }}" aria-label="Close">
-									<span aria-hidden="true">&times;</span>
-								</button>
-								<h4 class="modal-title">{{ 'AI assistant' | trans }}</h4>
-							</div>
-						{% endblock %}
+    <dialog popover id="{{ id }}" class="ai-product-management-modal modal-popover">
+        {% block modal %}
+            <div class="modal">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        {% block header %}
+                            <div class="modal-header">
+                                <button type="button" class="close" popovertarget="{{ id }}" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                                <h4 class="modal-title">{{ 'AI assistant' | trans }}</h4>
+                            </div>
+                        {% endblock %}
 
-						<div class="modal-body js-modal-body">
-							{% block loading %}
-								<div class="ai-product-management-modal__loading">
-									<span>{{ 'AI is processing your request' | trans }}</span>
-									<span class="fa fa-spinner fa-spin"></span>
-								</div>
-							{% endblock %}
+                        <div class="modal-body js-modal-body">
+                            {% block loading %}
+                                <div class="ai-product-management-modal__loading">
+                                    <span>{{ 'AI is processing your request' | trans }}</span>
+                                    <span class="fa fa-spinner fa-spin"></span>
+                                </div>
+                            {% endblock %}
 
-							{% block empty %}
-								{% if emptyText %}
-									<span class="text-center ai-product-management-modal__empty">{{ emptyText }}</span>
-								{% endif %}
-							{% endblock %}
+                            {% block empty %}
+                                {% if emptyText %}
+                                    <span class="text-center ai-product-management-modal__empty">{{ emptyText }}</span>
+                                {% endif %}
+                            {% endblock %}
 
-							<div class="ai-product-management-modal__content">
-								{% block content %}{% endblock %}
-							</div>
-						</div>
+                            <div class="ai-product-management-modal__content">
+                                {% block content %}{% endblock %}
+                            </div>
+                        </div>
 
-						{% block footer %}
-							<div class="modal-footer ai-product-management-modal__actions">
-								{% block actions %}
-									<div class="modal-actions">
-										<button type="button" class="js-ai-product-management-again btn btn-outline btn-view">{{ 'Try again' | trans }}</button>
-										<button type="button" popovertarget="{{ id }}" class="js-ai-product-management-apply btn">{{ 'Apply' | trans }}</button>
-									</div>
-								{% endblock %}
-							</div>
-						{% endblock %}
-					</div>
-				</div>
+                        {% block footer %}
+                            <div class="modal-footer ai-product-management-modal__actions">
+                                {% block actions %}
+                                    <div class="modal-actions">
+                                        <button type="button" class="js-ai-product-management-again btn btn-outline btn-view">{{ 'Try again' | trans }}</button>
+                                        <button type="button" popovertarget="{{ id }}" class="js-ai-product-management-apply btn">{{ 'Apply' | trans }}</button>
+                                    </div>
+                                {% endblock %}
+                            </div>
+                        {% endblock %}
+                    </div>
+                </div>
 
-				<button type="button" tabindex="-1" popovertarget="{{ id }}" class="modal-backdrop"></button>
-			</div>
-		{% endblock %}
-	</dialog>
+                <button type="button" tabindex="-1" popovertarget="{{ id }}" class="modal-backdrop"></button>
+            </div>
+        {% endblock %}
+    </dialog>
 {% endblock %}

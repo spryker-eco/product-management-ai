@@ -4,21 +4,21 @@
         <script src="{{ assetsPath('js/spryker-ai-category-suggestion-product-management-ai.js') }}"></script>
     {% endblock %}
 
-	{% embed 'ProductManagementAi/_partials/ai-popover.twig' with {
+    {% embed 'ProductManagementAi/_partials/ai-popover.twig' with {
         id: 'ai-category-modal',
         emptyText: 'Please fill in the product name and description for at least one locale' | trans,
     } %}
-		{% block content %}
-			<select multiple dropdown-parent=".js-modal-body" class="js-ai-category-select spryker-form-select2combobox"></select>
-		{% endblock %}
-	{% endembed %}
+        {% block content %}
+            <select multiple dropdown-parent=".js-modal-body" class="js-ai-category-select spryker-form-select2combobox"></select>
+        {% endblock %}
+    {% endembed %}
 
-	{% embed 'ProductManagementAi/_partials/ai-popover.twig' with {
+    {% embed 'ProductManagementAi/_partials/ai-popover.twig' with {
         id: 'ai-alt-text-modal',
         emptyText: 'Please fill in the product image url' | trans,
     } %}
-		{% block content %}
-			<input class="form-control js-ai-alt-text-input"/>
-		{% endblock %}
-	{% endembed %}
+        {% block content %}
+        <input class="form-control js-ai-alt-text-input"/>
+        {% endblock %}
+    {% endembed %}
 {% endblock %}

@@ -5,8 +5,8 @@ export class AiCategorySuggestion extends AiProductManagement {
     triggerSelector = '.js-ai-category-trigger';
 
     preparePayload(trigger) {
-        const fieldSelector = trigger.getAttribute('data-product-info-field');
-        const dataFields = document.querySelectorAll(fieldSelector);
+        const fieldElement = trigger.getAttribute('data-product-info-field');
+        const dataFields = document.querySelectorAll(fieldElement);
 
         this.data = {};
 
@@ -58,10 +58,10 @@ export class AiCategorySuggestion extends AiProductManagement {
     onApply() {
         const { selectedOptions } = this.modal.querySelector('.js-ai-category-select');
 
-        for (const option of this.fieldSelector.options) {
+        for (const option of this.fieldElement.options) {
             option.selected = [...selectedOptions].some(_option => _option.value === option.value);
         }
 
-        this.fieldSelector.dispatchEvent(new Event('change'));
+        this.fieldElement.dispatchEvent(new Event('change'));
     };
 }
