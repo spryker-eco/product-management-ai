@@ -39,6 +39,11 @@ class ImageAltTextProductAbstractFormExpanderPlugin extends AbstractPlugin imple
     protected const SUBFORM_IMAGE_COLLECTION = 'product_images';
 
     /**
+     * @var string
+     */
+    protected const TEMPLATE_PATH = '@SprykerEco:ProductManagementAi/ProductManagement/_partials/image-alt-text.twig';
+
+    /**
      * {@inheritDoc}
      *
      * @api
@@ -87,6 +92,9 @@ class ImageAltTextProductAbstractFormExpanderPlugin extends AbstractPlugin imple
                                     ]),
                                 ],
                                 'sanitize_xss' => true,
+                                'attr' => [
+                                    'template_path' => static::TEMPLATE_PATH,
+                                ],
                             ]);
                         }
                     }
