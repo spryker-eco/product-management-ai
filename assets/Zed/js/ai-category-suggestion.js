@@ -7,7 +7,8 @@ export class AiCategorySuggestion extends AiProductManagement {
     preparePayload(trigger) {
         const fieldSelector = trigger.getAttribute('data-product-info-field');
         const dataFields = document.querySelectorAll(fieldSelector);
-        const data = {};
+
+        this.data = {};
 
         for (const { name, value } of dataFields) {
             const descriptionPart = this.names.find((part) => name.includes(`[${part}]`));
@@ -16,18 +17,16 @@ export class AiCategorySuggestion extends AiProductManagement {
                 continue;
             }
 
-            data[`product_${descriptionPart}`] ??= value;
+            this.data[`product_${descriptionPart}`] ??= value;
 
-            if (Object.keys(data).length === this.names.length) {
-                break;
+            if (Object.keys(this.data).length === this.names.length) {
+                return;
             }
         }
-
-        this.data = new URLSearchParams(data);
     }
 
     async processAiAction() {
-        if (this.data.size !== this.names.length) {
+        if (Object.keys(this.data).length !== this.names.length) {
             this.modal.classList.add(this.states.empty);
             this.modal.classList.remove(this.states.loading);
 
@@ -39,9 +38,9 @@ export class AiCategorySuggestion extends AiProductManagement {
         select.replaceChildren();
 
         try {
-            const { categories } = await (await fetch('/product-management-ai/category-suggestion', {
+            const { categories } = await (await fetch(this.url, {
                 method: 'POST',
-                body: this.data,
+                body: new URLSearchParams(this.data),
             })).json();
             const fragment = document.createDocumentFragment();
 

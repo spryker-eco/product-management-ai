@@ -14,6 +14,7 @@ export class AiProductManagement {
     fieldSelector = null;
     trigger = null;
     result = null;
+    url = null;
 
     init() {
         document.querySelectorAll(this.trigger).forEach((trigger) => {
@@ -26,6 +27,7 @@ export class AiProductManagement {
 
         this.modal = document.getElementById(trigger.getAttribute('popovertarget'));
         this.fieldSelector = trigger.parentElement.querySelector(`${trigger.getAttribute('data-field-selector')}`);
+        this.url = trigger.dataset.url;
 
         this.refreshElements();
 
@@ -35,7 +37,7 @@ export class AiProductManagement {
         this.processAiAction();
     }
 
-    preparePayload(fieldSelector) {
+    preparePayload() {
         throw new Error('Method `preparePayload` at AiProductManagement class is not implemented.');
     }
 

@@ -7,8 +7,9 @@ export class AiImageAltText extends AiProductManagement {
         const inputLocale = this.fieldSelector.name.split('[')[1].split(']')[0].replace('image_set_', '');
         const patterns = JSON.parse(trigger.getAttribute('data-product-field-pattern'));
 
-        this.data ??= {};
-        this.data.locale = inputLocale === 'default' ? 'en_US' : inputLocale;
+        this.data = {
+            locale: inputLocale === 'default' ? 'en_US' : inputLocale,
+        };
 
         for (const pattern of patterns) {
             const { value } = document.querySelector(`[name="${pattern.replace('%locale%', this.data.locale)}"]`);
@@ -34,8 +35,9 @@ export class AiImageAltText extends AiProductManagement {
         input.value = '';
 
         try {
-            const { altText } = await (await fetch(`/product-image-alt-text-ai-generator/generate?locale=${this.data.locale}&imageUrl=${this.data.imageUrl}`, {
+            const { altText } = await (await fetch(this.url, {
                 method: 'POST',
+                body: new URLSearchParams(this.data),
             })).json();
 
             this.result = decodeURI(altText);
