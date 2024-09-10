@@ -12,12 +12,11 @@ export class AiProductManagement {
     data = null;
     modal = null;
     fieldSelector = null;
-    trigger = null;
-    result = null;
+    triggerSelector = null;
     url = null;
 
     init() {
-        document.querySelectorAll(this.trigger).forEach((trigger) => {
+        document.querySelectorAll(this.triggerSelector).forEach((trigger) => {
             trigger.addEventListener('click', this.onTriggerClick.bind(this));
         })
     }
@@ -47,7 +46,6 @@ export class AiProductManagement {
 
     refreshElements() {
         this.data = null;
-        this.result = null;
         this.modal.classList.remove(this.states.loading, this.states.empty);
         this.modal.querySelector('.js-ai-product-management-apply').removeEventListener('click', this.onApply);
         this.modal.querySelector('.js-ai-product-management-again').removeEventListener('click', this.onAgain);

@@ -1,17 +1,12 @@
-{% set data = {
-    id: data.id,
-    emptyText: data.emptyText | default,
-} %}
-
 {% block body %}
-	<dialog popover id="{{ data.id }}" class="ai-product-management-modal modal-popover">
+	<dialog popover id="{{ id }}" class="ai-product-management-modal modal-popover">
 		{% block modal %}
 			<div class="modal">
 				<div class="modal-dialog">
 					<div class="modal-content">
 						{% block header %}
 							<div class="modal-header">
-								<button type="button" class="close" popovertarget="{{ data.id }}" aria-label="Close">
+								<button type="button" class="close" popovertarget="{{ id }}" aria-label="Close">
 									<span aria-hidden="true">&times;</span>
 								</button>
 								<h4 class="modal-title">{{ 'AI assistant' | trans }}</h4>
@@ -27,8 +22,8 @@
 							{% endblock %}
 
 							{% block empty %}
-								{% if data.emptyText %}
-									<span class="text-center ai-product-management-modal__empty">{{ data.emptyText }}</span>
+								{% if emptyText %}
+									<span class="text-center ai-product-management-modal__empty">{{ emptyText }}</span>
 								{% endif %}
 							{% endblock %}
 
@@ -42,7 +37,7 @@
 								{% block actions %}
 									<div class="modal-actions">
 										<button type="button" class="js-ai-product-management-again btn btn-outline btn-view">{{ 'Try again' | trans }}</button>
-										<button type="button" popovertarget="{{ data.id }}" class="js-ai-product-management-apply btn">{{ 'Apply' | trans }}</button>
+										<button type="button" popovertarget="{{ id }}" class="js-ai-product-management-apply btn">{{ 'Apply' | trans }}</button>
 									</div>
 								{% endblock %}
 							</div>
@@ -50,7 +45,7 @@
 					</div>
 				</div>
 
-				<button type="button" tabindex="-1" popovertarget="{{ data.id }}" class="modal-backdrop"></button>
+				<button type="button" tabindex="-1" popovertarget="{{ id }}" class="modal-backdrop"></button>
 			</div>
 		{% endblock %}
 	</dialog>

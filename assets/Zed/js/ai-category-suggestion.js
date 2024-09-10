@@ -2,7 +2,7 @@ import { AiProductManagement } from './ai-product-management';
 
 export class AiCategorySuggestion extends AiProductManagement {
     names = ['description', 'name'];
-    trigger = '.js-ai-category-trigger';
+    triggerSelector = '.js-ai-category-trigger';
 
     preparePayload(trigger) {
         const fieldSelector = trigger.getAttribute('data-product-info-field');
@@ -11,13 +11,13 @@ export class AiCategorySuggestion extends AiProductManagement {
         this.data = {};
 
         for (const { name, value } of dataFields) {
-            const descriptionPart = this.names.find((part) => name.includes(`[${part}]`));
+            const informationalPart = this.names.find((part) => name.includes(`[${part}]`));
 
-            if (!descriptionPart || !value) {
+            if (!informationalPart || !value) {
                 continue;
             }
 
-            this.data[`product_${descriptionPart}`] ??= value;
+            this.data[`product_${informationalPart}`] ??= value;
 
             if (Object.keys(this.data).length === this.names.length) {
                 return;
@@ -46,8 +46,6 @@ export class AiCategorySuggestion extends AiProductManagement {
 
             for (const [text, id] of Object.entries(categories)) {
                 fragment.append(new Option(text, id, true, true));
-                this.result ??= [];
-                this.result.push(String(id));
             }
 
             select.append(fragment);
@@ -58,8 +56,10 @@ export class AiCategorySuggestion extends AiProductManagement {
     }
 
     onApply() {
+        const { selectedOptions } = this.modal.querySelector('.js-ai-category-select');
+
         for (const option of this.fieldSelector.options) {
-            option.selected = this.result.includes(option.value);
+            option.selected = [...selectedOptions].some(_option => _option.value === option.value);
         }
 
         this.fieldSelector.dispatchEvent(new Event('change'));

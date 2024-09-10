@@ -1,7 +1,7 @@
 import { AiProductManagement } from './ai-product-management';
 
 export class AiImageAltText extends AiProductManagement {
-    trigger = '.js-ai-alt-image-trigger';
+    triggerSelector = '.js-ai-alt-image-trigger';
 
     preparePayload(trigger) {
         const inputLocale = this.fieldSelector.name.split('[')[1].split(']')[0].replace('image_set_', '');
@@ -40,8 +40,7 @@ export class AiImageAltText extends AiProductManagement {
                 body: new URLSearchParams(this.data),
             })).json();
 
-            this.result = decodeURI(altText);
-            input.value = this.result;
+            input.value = decodeURI(altText);
         } finally {
             this.modal.classList.remove(this.states.loading);
         }
