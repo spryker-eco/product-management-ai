@@ -51,7 +51,6 @@ class ProductCategoryAbstractFormDataProvider implements ProductCategoryAbstract
         $formOptions = [];
         $categoryCollectionTransfer = $this->categoryFacade->getAllCategoryCollection($this->localeFacade->getCurrentLocale());
 
-        /** @var \Generated\Shared\Transfer\CategoryTransfer $categoryTransfer */
         foreach ($categoryCollectionTransfer->getCategories() as $categoryTransfer) {
             $formOptions[$categoryTransfer->getNameOrFail()] = $categoryTransfer->getIdCategoryOrFail();
         }

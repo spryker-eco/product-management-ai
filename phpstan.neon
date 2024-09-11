@@ -9,5 +9,3 @@ parameters:
         - '#Parameter .+ has invalid type .+Transfer#'
         - '#Call .+ on an unknown class .+AutoCompletion.#'
         - '#Access to constant .+ on an unknown class .+Transfer.#'
-        - '#Access to constant .+ on an unknown class .+TableMap.#'
-        - '#Call to static method .+ on an unknown class .+Query.#'
