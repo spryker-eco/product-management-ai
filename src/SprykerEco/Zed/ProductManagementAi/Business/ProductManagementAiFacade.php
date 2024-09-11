@@ -63,7 +63,7 @@ class ProductManagementAiFacade extends AbstractFacade implements ProductManagem
     public function translate(AiTranslatorRequestTransfer $aiTranslatorRequestTransfer): AiTranslatorResponseTransfer
     {
         return $this->getFactory()
-            ->getTranslator()
+            ->createTranslator()
             ->translate($aiTranslatorRequestTransfer);
     }
 }

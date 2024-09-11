@@ -7,7 +7,6 @@
 
 namespace SprykerEco\Zed\ProductManagementAi\Business\Builder;
 
-use Locale;
 use SprykerEco\Zed\ProductManagementAi\ProductManagementAiConfig;
 
 class PromptBuilder implements PromptBuilderInterface
@@ -36,7 +35,7 @@ class PromptBuilder implements PromptBuilderInterface
         return [
             [
                 'type' => 'text',
-                'text' => $this->productManagementAiConfig->getImageAltTextPrompt(Locale::getDisplayLanguage($targetLocale, 'en_US')),
+                'text' => $this->productManagementAiConfig->getImageAltTextPrompt($targetLocale),
             ],
             [
                 'type' => 'image_url',

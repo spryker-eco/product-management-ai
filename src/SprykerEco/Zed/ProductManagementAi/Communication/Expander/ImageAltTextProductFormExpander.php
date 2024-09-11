@@ -25,7 +25,7 @@ class ImageAltTextProductFormExpander implements ImageAltTextProductFormExpander
     /**
      * @var string
      */
-    public const FIELD_ALT_TEXT = 'alt_text';
+    protected const FIELD_ALT_TEXT = 'alt_text';
 
     /**
      * @var string
@@ -77,8 +77,12 @@ class ImageAltTextProductFormExpander implements ImageAltTextProductFormExpander
                 $localeCollection[] = (new LocaleTransfer())->setLocaleName('default');
 
                 foreach ($localeCollection as $localeTransfer) {
-                    $imageSetCollection = $form->get($this->getLocalizedImageSetFormName($localeTransfer));
+                    $localizedImageSetFormName = $this->getLocalizedImageSetFormName($localeTransfer);
+                    if (!$form->has($localizedImageSetFormName)) {
+                        continue;
+                    }
 
+                    $imageSetCollection = $form->get($localizedImageSetFormName);
                     foreach ($imageSetCollection as $imageSet) {
                         $imageCollection = $imageSet->get(static::SUBFORM_IMAGE_COLLECTION);
 

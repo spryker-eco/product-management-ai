@@ -15,7 +15,8 @@
         "spryker/symfony": "^3.0.0",
         "spryker/transfer": "^3.27.0",
         "spryker/util-encoding": "^2.0.0",
-        "spryker/storage": "^3.20.0"
+        "spryker/storage": "^3.20.0",
+        "spryker/product-category": "^4.17.0"
     },
     "require-dev": {
         "phpstan/phpstan": "*",
@@ -40,8 +41,7 @@
     "scripts": {
         "cs-check": "phpcs -p -s --standard=vendor/spryker/code-sniffer/SprykerStrict/ruleset.xml src/",
         "cs-fix": "phpcbf -p --standard=vendor/spryker/code-sniffer/SprykerStrict/ruleset.xml src/",
-        "stan": "phpstan analyse -c phpstan.neon -l 8 src/",
-        "stan-setup": "cp composer.json composer.backup && COMPOSER_MEMORY_LIMIT=-1 composer require --dev phpstan/phpstan:^0.12 && mv composer.backup composer.json"
+        "stan": "phpstan analyse -c phpstan.neon -l 8 src/"
     },
     "extra": {
         "branch-alias": {
@@ -51,7 +51,8 @@
     "config": {
         "sort-packages": true,
         "allow-plugins": {
-            "dealerdirect/phpcodesniffer-composer-installer": true
+            "dealerdirect/phpcodesniffer-composer-installer": true,
+            "php-http/discovery": false
         }
     },
     "suggest": {

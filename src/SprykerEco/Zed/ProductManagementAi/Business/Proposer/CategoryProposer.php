@@ -5,25 +5,16 @@
  * For full license information, please view the LICENSE file that was distributed with this source code.
  */
 
-namespace SprykerEco\Zed\ProductManagementAi\Business\Category;
+namespace SprykerEco\Zed\ProductManagementAi\Business\Proposer;
 
 use Generated\Shared\Transfer\OpenAiChatRequestTransfer;
+use SprykerEco\Zed\ProductManagementAi\Business\Reader\CategoryReaderInterface;
 use SprykerEco\Zed\ProductManagementAi\Dependency\Client\ProductManagementAiToOpenAiClientInterface;
 use SprykerEco\Zed\ProductManagementAi\Dependency\Service\ProductManagementAiToUtilEncodingServiceInterface;
+use SprykerEco\Zed\ProductManagementAi\ProductManagementAiConfig;
 
 class CategoryProposer implements CategoryProposerInterface
 {
-    /**
-     * @var string
-     */
-    protected const PRODUCT_CATEGORY_SUGGESTION_PROMPT = 'Based on the provided product name and description, suggest the most fitting product categories from the existing categories list for optimal placement in an e-commerce store.
-        Product name: %s
-        Product description: %s
-        Existing categories:
-        %s
-
-        Provide only the suggested categories as your output as key and value';
-
     /**
      * @var \SprykerEco\Zed\ProductManagementAi\Dependency\Client\ProductManagementAiToOpenAiClientInterface
      */
@@ -35,23 +26,31 @@ class CategoryProposer implements CategoryProposerInterface
     protected ProductManagementAiToUtilEncodingServiceInterface $utilEncodingService;
 
     /**
-     * @var \SprykerEco\Zed\ProductManagementAi\Business\Category\CategoryReaderInterface
+     * @var \SprykerEco\Zed\ProductManagementAi\Business\Reader\CategoryReaderInterface
      */
     protected CategoryReaderInterface $categoryReader;
 
     /**
+     * @var \SprykerEco\Zed\ProductManagementAi\ProductManagementAiConfig
+     */
+    protected ProductManagementAiConfig $productManagementAiConfig;
+
+    /**
      * @param \SprykerEco\Zed\ProductManagementAi\Dependency\Client\ProductManagementAiToOpenAiClientInterface $openAiClient
      * @param \SprykerEco\Zed\ProductManagementAi\Dependency\Service\ProductManagementAiToUtilEncodingServiceInterface $utilEncodingService
-     * @param \SprykerEco\Zed\ProductManagementAi\Business\Category\CategoryReaderInterface $categoryReader
+     * @param \SprykerEco\Zed\ProductManagementAi\Business\Reader\CategoryReaderInterface $categoryReader
+     * @param \SprykerEco\Zed\ProductManagementAi\ProductManagementAiConfig $productManagementAiConfig
      */
     public function __construct(
         ProductManagementAiToOpenAiClientInterface $openAiClient,
         ProductManagementAiToUtilEncodingServiceInterface $utilEncodingService,
-        CategoryReaderInterface $categoryReader
+        CategoryReaderInterface $categoryReader,
+        ProductManagementAiConfig $productManagementAiConfig
     ) {
         $this->openAiClient = $openAiClient;
         $this->utilEncodingService = $utilEncodingService;
         $this->categoryReader = $categoryReader;
+        $this->productManagementAiConfig = $productManagementAiConfig;
     }
 
     /**
@@ -92,6 +91,11 @@ class CategoryProposer implements CategoryProposerInterface
     {
         $categories = $this->utilEncodingService->encodeJson($categories);
 
-        return sprintf(static::PRODUCT_CATEGORY_SUGGESTION_PROMPT, $productName, $description, $categories);
+        return sprintf(
+            $this->productManagementAiConfig->getProductCategorySuggestionPromptTemplate(),
+            $productName,
+            $description,
+            $categories,
+        );
     }
 }

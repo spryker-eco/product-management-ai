@@ -8,7 +8,6 @@
 namespace SprykerEco\Zed\ProductManagementAi;
 
 use Spryker\Zed\Kernel\AbstractBundleConfig;
-use SprykerEco\Shared\ProductManagementAi\ProductManagementAiConstants;
 
 class ProductManagementAiConfig extends AbstractBundleConfig
 {
@@ -31,6 +30,17 @@ class ProductManagementAiConfig extends AbstractBundleConfig
         IMPORTANT: ONLY RETURN THE TRANSLATED TEXT AND NOTHING ELSE.';
 
     /**
+     * @var string
+     */
+    protected const PRODUCT_CATEGORY_SUGGESTION_PROMPT_TEMPLATE = 'Based on the provided product name and description, suggest the most fitting product categories from the existing categories list for optimal placement in an e-commerce store.
+        Product name: %s
+        Product description: %s
+        Existing categories:
+        %s
+
+        Provide only the suggested categories as your output as key and value';
+
+    /**
      * @api
      *
      * @param string $locale
@@ -40,7 +50,7 @@ class ProductManagementAiConfig extends AbstractBundleConfig
     public function getImageAltTextPrompt(string $locale): string
     {
         return sprintf(
-            'Describe the most important characteristics of the main object you can identify in the image e.g. manufacturer, model, color, part number or any identification number that help me to define the HTML alt text for best SEO using the language %s. Your output must be ony a list of the product attributes. Remove the attribute names and keep only the values from your output and provide them in a single line.',
+            'Describe the most important characteristics of the main object you can identify in the image e.g. manufacturer, model, color, part number or any identification number that help me to define the HTML alt text for best SEO using the language from locale %s. Your output must be ony a list of the product attributes. Remove the attribute names and keep only the values from your output and provide them in a single line.',
             $locale,
         );
     }
@@ -70,7 +80,7 @@ class ProductManagementAiConfig extends AbstractBundleConfig
 
     /**
      * Specification:
-     * - Returns the default source locale for translator.
+     * - Returns prompt template for AI translation.
      *
      * @api
      *
@@ -82,12 +92,15 @@ class ProductManagementAiConfig extends AbstractBundleConfig
     }
 
     /**
+     * Specification:
+     * - Returns prompt template for AI product category suggestion.
+     *
      * @api
      *
-     * @return bool
+     * @return string
      */
-    public function isTranslatorCacheEnabled(): bool
+    public function getProductCategorySuggestionPromptTemplate(): string
     {
-        return $this->get(ProductManagementAiConstants::ENABLE_TRANSLATION_CACHE, false);
+        return static::PRODUCT_CATEGORY_SUGGESTION_PROMPT_TEMPLATE;
     }
 }

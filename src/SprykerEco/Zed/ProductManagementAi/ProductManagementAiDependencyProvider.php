@@ -13,6 +13,7 @@ use SprykerEco\Zed\ProductManagementAi\Dependency\Client\ProductManagementAiToOp
 use SprykerEco\Zed\ProductManagementAi\Dependency\Client\ProductManagementAiToStorageClientBridge;
 use SprykerEco\Zed\ProductManagementAi\Dependency\Facade\ProductManagementAiToCategoryFacadeBridge;
 use SprykerEco\Zed\ProductManagementAi\Dependency\Facade\ProductManagementAiToLocaleFacadeBridge;
+use SprykerEco\Zed\ProductManagementAi\Dependency\Facade\ProductManagementAiToProductCategoryFacadeBridge;
 use SprykerEco\Zed\ProductManagementAi\Dependency\Service\ProductManagementAiToUtilEncodingServiceBridge;
 
 /**
@@ -29,6 +30,11 @@ class ProductManagementAiDependencyProvider extends AbstractBundleDependencyProv
      * @var string
      */
     public const FACADE_LOCALE = 'FACADE_LOCALE';
+
+    /**
+     * @var string
+     */
+    public const FACADE_PRODUCT_CATEGORY = 'FACADE_PRODUCT_CATEGORY';
 
     /**
      * @var string
@@ -70,6 +76,7 @@ class ProductManagementAiDependencyProvider extends AbstractBundleDependencyProv
     {
         $container = $this->addCategoryFacade($container);
         $container = $this->addLocaleFacade($container);
+        $container = $this->addProductCategoryFacade($container);
 
         return $container;
     }
@@ -139,6 +146,20 @@ class ProductManagementAiDependencyProvider extends AbstractBundleDependencyProv
     {
         $container->set(static::CLIENT_STORAGE, function (Container $container) {
             return new ProductManagementAiToStorageClientBridge($container->getLocator()->storage()->client());
+        });
+
+        return $container;
+    }
+
+    /**
+     * @param \Spryker\Zed\Kernel\Container $container
+     *
+     * @return \Spryker\Zed\Kernel\Container
+     */
+    protected function addProductCategoryFacade(Container $container): Container
+    {
+        $container->set(static::FACADE_PRODUCT_CATEGORY, function (Container $container) {
+            return new ProductManagementAiToProductCategoryFacadeBridge($container->getLocator()->productCategory()->facade());
         });
 
         return $container;

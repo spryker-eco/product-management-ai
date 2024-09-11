@@ -10,16 +10,15 @@ namespace SprykerEco\Zed\ProductManagementAi\Business;
 use Spryker\Zed\Kernel\Business\AbstractBusinessFactory;
 use SprykerEco\Zed\ProductManagementAi\Business\Builder\PromptBuilder;
 use SprykerEco\Zed\ProductManagementAi\Business\Builder\PromptBuilderInterface;
-use SprykerEco\Zed\ProductManagementAi\Business\Category\CategoryProposer;
-use SprykerEco\Zed\ProductManagementAi\Business\Category\CategoryProposerInterface;
-use SprykerEco\Zed\ProductManagementAi\Business\Category\CategoryReader;
-use SprykerEco\Zed\ProductManagementAi\Business\Category\CategoryReaderInterface;
 use SprykerEco\Zed\ProductManagementAi\Business\Generator\ImageAltTextGenerator;
 use SprykerEco\Zed\ProductManagementAi\Business\Generator\ImageAltTextGeneratorInterface;
-use SprykerEco\Zed\ProductManagementAi\Business\Translator\StorageKeyBuilder\StorageKeyBuilder;
-use SprykerEco\Zed\ProductManagementAi\Business\Translator\StorageKeyBuilder\StorageKeyBuilderInterface;
+use SprykerEco\Zed\ProductManagementAi\Business\Proposer\CategoryProposer;
+use SprykerEco\Zed\ProductManagementAi\Business\Proposer\CategoryProposerInterface;
+use SprykerEco\Zed\ProductManagementAi\Business\Reader\CategoryReader;
+use SprykerEco\Zed\ProductManagementAi\Business\Reader\CategoryReaderInterface;
+use SprykerEco\Zed\ProductManagementAi\Business\StorageKeyBuilder\StorageKeyBuilder;
+use SprykerEco\Zed\ProductManagementAi\Business\StorageKeyBuilder\StorageKeyBuilderInterface;
 use SprykerEco\Zed\ProductManagementAi\Business\Translator\Translator;
-use SprykerEco\Zed\ProductManagementAi\Business\Translator\TranslatorCacheAware;
 use SprykerEco\Zed\ProductManagementAi\Business\Translator\TranslatorInterface;
 use SprykerEco\Zed\ProductManagementAi\Dependency\Client\ProductManagementAiToOpenAiClientInterface;
 use SprykerEco\Zed\ProductManagementAi\Dependency\Client\ProductManagementAiToStorageClientInterface;
@@ -34,7 +33,7 @@ use SprykerEco\Zed\ProductManagementAi\ProductManagementAiDependencyProvider;
 class ProductManagementAiBusinessFactory extends AbstractBusinessFactory
 {
     /**
-     * @return \SprykerEco\Zed\ProductManagementAi\Business\Category\CategoryReaderInterface
+     * @return \SprykerEco\Zed\ProductManagementAi\Business\Reader\CategoryReaderInterface
      */
     public function createCategoryReader(): CategoryReaderInterface
     {
@@ -45,7 +44,7 @@ class ProductManagementAiBusinessFactory extends AbstractBusinessFactory
     }
 
     /**
-     * @return \SprykerEco\Zed\ProductManagementAi\Business\Category\CategoryProposerInterface
+     * @return \SprykerEco\Zed\ProductManagementAi\Business\Proposer\CategoryProposerInterface
      */
     public function createCategoryProposer(): CategoryProposerInterface
     {
@@ -53,6 +52,7 @@ class ProductManagementAiBusinessFactory extends AbstractBusinessFactory
             $this->getOpenAiClient(),
             $this->getUtilEncodingService(),
             $this->createCategoryReader(),
+            $this->getConfig(),
         );
     }
 
@@ -88,35 +88,11 @@ class ProductManagementAiBusinessFactory extends AbstractBusinessFactory
     }
 
     /**
-     * @return \SprykerEco\Zed\ProductManagementAi\Business\Translator\TranslatorInterface
-     */
-    public function createTranslatorCacheAware(): TranslatorInterface
-    {
-        return new TranslatorCacheAware(
-            $this->createTranslator(),
-            $this->getStorageClient(),
-            $this->createStorageKeyBuilder(),
-        );
-    }
-
-    /**
-     * @return \SprykerEco\Zed\ProductManagementAi\Business\Translator\StorageKeyBuilder\StorageKeyBuilderInterface
+     * @return \SprykerEco\Zed\ProductManagementAi\Business\StorageKeyBuilder\StorageKeyBuilderInterface
      */
     public function createStorageKeyBuilder(): StorageKeyBuilderInterface
     {
         return new StorageKeyBuilder();
-    }
-
-    /**
-     * @return \SprykerEco\Zed\ProductManagementAi\Business\Translator\TranslatorInterface
-     */
-    public function getTranslator(): TranslatorInterface
-    {
-        if ($this->getConfig()->isTranslatorCacheEnabled()) {
-            return $this->createTranslatorCacheAware();
-        }
-
-        return $this->createTranslator();
     }
 
     /**

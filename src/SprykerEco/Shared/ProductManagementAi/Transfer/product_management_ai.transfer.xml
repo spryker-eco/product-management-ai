@@ -31,4 +31,19 @@
         <property name="invalidateCache" type="bool"/>
     </transfer>
 
+    <transfer name="Category">
+        <property name="idCategory" type="int"/>
+        <property name="name" type="string"/>
+    </transfer>
+
+    <transfer name="CategoryCollection">
+        <property name="categories" type="Category[]" singular="category"/>
+    </transfer>
+
+    <transfer name="ProductAbstract">
+    </transfer>
+
+    <transfer name="Locale">
+    </transfer>
+
 </transfers>

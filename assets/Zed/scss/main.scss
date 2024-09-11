@@ -32,7 +32,7 @@
     &:has(.input-group-btn) {
         .form-wrapper-clickable-affix__trigger {
             right: 40px;
-            z-index: 2;
+            z-index: 10;
         }
     }
 
