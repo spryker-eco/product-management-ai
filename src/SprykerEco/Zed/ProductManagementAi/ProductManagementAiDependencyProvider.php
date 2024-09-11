@@ -10,7 +10,6 @@ namespace SprykerEco\Zed\ProductManagementAi;
 use Spryker\Zed\Kernel\AbstractBundleDependencyProvider;
 use Spryker\Zed\Kernel\Container;
 use SprykerEco\Zed\ProductManagementAi\Dependency\Client\ProductManagementAiToOpenAiClientBridge;
-use SprykerEco\Zed\ProductManagementAi\Dependency\Client\ProductManagementAiToStorageClientBridge;
 use SprykerEco\Zed\ProductManagementAi\Dependency\Facade\ProductManagementAiToCategoryFacadeBridge;
 use SprykerEco\Zed\ProductManagementAi\Dependency\Facade\ProductManagementAiToLocaleFacadeBridge;
 use SprykerEco\Zed\ProductManagementAi\Dependency\Facade\ProductManagementAiToProductCategoryFacadeBridge;
@@ -47,11 +46,6 @@ class ProductManagementAiDependencyProvider extends AbstractBundleDependencyProv
     public const CLIENT_OPEN_AI = 'CLIENT_OPEN_AI';
 
     /**
-     * @var string
-     */
-    public const CLIENT_STORAGE = 'CLIENT_STORAGE';
-
-    /**
      * @param \Spryker\Zed\Kernel\Container $container
      *
      * @return \Spryker\Zed\Kernel\Container
@@ -62,7 +56,6 @@ class ProductManagementAiDependencyProvider extends AbstractBundleDependencyProv
         $container = $this->addLocaleFacade($container);
         $container = $this->addUtilEncodingService($container);
         $container = $this->addOpenAiClient($container);
-        $container = $this->addStorageClient($container);
 
         return $container;
     }
@@ -132,20 +125,6 @@ class ProductManagementAiDependencyProvider extends AbstractBundleDependencyProv
     {
         $container->set(static::CLIENT_OPEN_AI, function (Container $container) {
             return new ProductManagementAiToOpenAiClientBridge($container->getLocator()->openAi()->client());
-        });
-
-        return $container;
-    }
-
-    /**
-     * @param \Spryker\Zed\Kernel\Container $container
-     *
-     * @return \Spryker\Zed\Kernel\Container
-     */
-    protected function addStorageClient(Container $container): Container
-    {
-        $container->set(static::CLIENT_STORAGE, function (Container $container) {
-            return new ProductManagementAiToStorageClientBridge($container->getLocator()->storage()->client());
         });
 
         return $container;

@@ -20,7 +20,7 @@ class ProductCategoryProductAbstractPostCreatePlugin extends AbstractPlugin impl
 {
     /**
      * {@inheritDoc}
-     * - Assign categories to the product abstract after the product abstract is created.
+     * - Assigns categories to the product abstract after the product abstract is created.
      *
      * @api
      *

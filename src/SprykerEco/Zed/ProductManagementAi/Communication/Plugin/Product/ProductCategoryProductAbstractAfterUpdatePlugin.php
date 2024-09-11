@@ -25,8 +25,6 @@ class ProductCategoryProductAbstractAfterUpdatePlugin extends AbstractPlugin imp
      *
      * @api
      *
-     * @see \Spryker\Zed\Product\ProductDependencyProvider
-     *
      * @param \Generated\Shared\Transfer\ProductAbstractTransfer $productAbstractTransfer
      *
      * @return \Generated\Shared\Transfer\ProductAbstractTransfer
