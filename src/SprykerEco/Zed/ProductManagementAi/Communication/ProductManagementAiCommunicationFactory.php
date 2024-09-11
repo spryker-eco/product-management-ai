@@ -14,6 +14,7 @@ use SprykerEco\Zed\ProductManagementAi\Communication\Form\DataProvider\ProductCa
 use SprykerEco\Zed\ProductManagementAi\Dependency\Facade\ProductManagementAiToCategoryFacadeInterface;
 use SprykerEco\Zed\ProductManagementAi\Dependency\Facade\ProductManagementAiToLocaleFacadeInterface;
 use SprykerEco\Zed\ProductManagementAi\ProductManagementAiDependencyProvider;
+use src\SprykerEco\Zed\ProductManagementAi\Dependency\Client\ProductManagementAiToProductCategoryFacadeInterface;
 
 /**
  * @method \SprykerEco\Zed\ProductManagementAi\ProductManagementAiConfig getConfig()
@@ -56,5 +57,13 @@ class ProductManagementAiCommunicationFactory extends AbstractCommunicationFacto
     public function getLocaleFacade(): ProductManagementAiToLocaleFacadeInterface
     {
         return $this->getProvidedDependency(ProductManagementAiDependencyProvider::FACADE_LOCALE);
+    }
+
+    /**
+     * @return \src\SprykerEco\Zed\ProductManagementAi\Dependency\Client\ProductManagementAiToProductCategoryFacadeInterface
+     */
+    public function getProductCategoryFacade(): ProductManagementAiToProductCategoryFacadeInterface
+    {
+        return $this->getProvidedDependency(ProductManagementAiDependencyProvider::FACADE_PRODUCT_CATEGORY);
     }
 }

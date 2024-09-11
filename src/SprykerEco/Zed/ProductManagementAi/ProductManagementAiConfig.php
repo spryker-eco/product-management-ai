@@ -8,7 +8,6 @@
 namespace SprykerEco\Zed\ProductManagementAi;
 
 use Spryker\Zed\Kernel\AbstractBundleConfig;
-use SprykerEco\Shared\ProductManagementAi\ProductManagementAiConstants;
 
 class ProductManagementAiConfig extends AbstractBundleConfig
 {
@@ -79,15 +78,5 @@ class ProductManagementAiConfig extends AbstractBundleConfig
     public function getAiTranslationPromptTemplate(): string
     {
         return static::AI_TRANSLATION_PROMPT_TEMPLATE;
-    }
-
-    /**
-     * @api
-     *
-     * @return bool
-     */
-    public function isTranslatorCacheEnabled(): bool
-    {
-        return $this->get(ProductManagementAiConstants::ENABLE_TRANSLATION_CACHE, false);
     }
 }
