@@ -21,11 +21,6 @@ class Translator implements TranslatorInterface
     protected const INVALID_TRANSLATION_MESSAGE = 'Unable to translate provided text.';
 
     /**
-     * @var string
-     */
-    protected const INVALID_TRANSLATION_LOCALES_MESSAGE = 'Source and target locales must not match.';
-
-    /**
      * @var \SprykerEco\Zed\ProductManagementAi\Dependency\Client\ProductManagementAiToOpenAiClientInterface
      */
     protected ProductManagementAiToOpenAiClientInterface $openAiClient;
@@ -55,10 +50,6 @@ class Translator implements TranslatorInterface
     public function translate(AiTranslatorRequestTransfer $aiTranslatorRequestTransfer): AiTranslatorResponseTransfer
     {
         $aiTranslatorRequestTransfer = $this->normalizeSourceLocale($aiTranslatorRequestTransfer);
-        if (!$this->checkRequestLocales($aiTranslatorRequestTransfer)) {
-            return $this->createTranslatorResponse($aiTranslatorRequestTransfer, static::INVALID_TRANSLATION_LOCALES_MESSAGE);
-        }
-
         $openAiChatRequestTransfer = (new OpenAiChatRequestTransfer())
             ->setMessage($this->buildTranslationRequestPrompt($aiTranslatorRequestTransfer));
         $openAiChatResponse = $this->openAiClient->chat($openAiChatRequestTransfer);
@@ -67,16 +58,6 @@ class Translator implements TranslatorInterface
             $aiTranslatorRequestTransfer,
             $openAiChatResponse->getMessage() ?? static::INVALID_TRANSLATION_MESSAGE,
         );
-    }
-
-    /**
-     * @param \Generated\Shared\Transfer\AiTranslatorRequestTransfer $aiTranslatorRequestTransfer
-     *
-     * @return bool
-     */
-    protected function checkRequestLocales(AiTranslatorRequestTransfer $aiTranslatorRequestTransfer): bool
-    {
-        return $aiTranslatorRequestTransfer->getSourceLocaleOrFail() !== $aiTranslatorRequestTransfer->getTargetLocale();
     }
 
     /**

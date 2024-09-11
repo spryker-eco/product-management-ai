@@ -16,12 +16,12 @@ interface ProductManagementAiToStorageClientInterface
      *
      * @return mixed
      */
-    public function set($key, $value, $ttl = null);
+    public function set(string $key, mixed $value, ?int $ttl = null);
 
     /**
      * @param string $key
      *
      * @return mixed
      */
-    public function get($key);
+    public function get(string $key);
 }

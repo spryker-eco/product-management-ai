@@ -29,7 +29,7 @@ class ProductManagementAiToStorageClientBridge implements ProductManagementAiToS
      *
      * @return mixed
      */
-    public function set($key, $value, $ttl = null)
+    public function set(string $key, mixed $value, ?int $ttl = null)
     {
         return $this->storageClient->set($key, $value, $ttl);
     }
@@ -39,7 +39,7 @@ class ProductManagementAiToStorageClientBridge implements ProductManagementAiToS
      *
      * @return mixed
      */
-    public function get($key)
+    public function get(string $key)
     {
         return $this->storageClient->get($key);
     }
