@@ -14,6 +14,7 @@
     </transfer>
 
     <transfer name="OpenAiChatResponse" strict="true">
+        <property name="isSuccessful" type="bool"/>
         <property name="message" type="string"/>
     </transfer>
 

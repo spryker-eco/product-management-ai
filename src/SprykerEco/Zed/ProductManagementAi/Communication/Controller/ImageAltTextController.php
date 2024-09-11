@@ -47,19 +47,36 @@ class ImageAltTextController extends AbstractController
     {
         $imageUrl = $request->get(static::PARAM_IMAGE_URL);
         $targetLocale = $request->get(static::PARAM_LOCALE);
-        $response = new JsonResponse();
 
         if (!$imageUrl || !$targetLocale) {
-            return $response->setData([
-                'error' => 'Bad request',
-                'message' => 'ImageUrl and/or target locale are missing from request.',
-            ])->setStatusCode(static::STATUS_CODE_BAD_REQUEST);
+            return $this->getErrorJsonResponse('ImageUrl and/or target locale are missing from request.');
         }
 
-        return $response->setData([
+        $openAiChatResponseTransfer = $this->getFacade()->generateImageAltText($imageUrl, $targetLocale);
+        if (!$openAiChatResponseTransfer->getIsSuccessful()) {
+            return $this->getErrorJsonResponse($openAiChatResponseTransfer->getMessage());
+        }
+
+        return $this->jsonResponse([
             'altText' => $this->getFacade()
                 ->generateImageAltText($imageUrl, $targetLocale)
                 ->getMessageOrFail(),
         ]);
+    }
+
+    /**
+     * @param string|null $errorMessage
+     *
+     * @return \Symfony\Component\HttpFoundation\JsonResponse
+     */
+    protected function getErrorJsonResponse(?string $errorMessage): JsonResponse
+    {
+        return $this->jsonResponse(
+            [
+                'error' => 'Bad request',
+                'message' => $errorMessage,
+            ],
+            static::STATUS_CODE_BAD_REQUEST,
+        );
     }
 }

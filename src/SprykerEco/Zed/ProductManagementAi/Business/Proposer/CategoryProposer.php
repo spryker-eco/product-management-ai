@@ -71,7 +71,7 @@ class CategoryProposer implements CategoryProposerInterface
 
         $openAiChatResponseTransfer = $this->openAiClient->chat($openAiChatRequestTransfer);
 
-        if (!$openAiChatResponseTransfer->getMessage()) {
+        if (!$openAiChatResponseTransfer->getMessage() || !$openAiChatResponseTransfer->getIsSuccessful()) {
             return [];
         }
 

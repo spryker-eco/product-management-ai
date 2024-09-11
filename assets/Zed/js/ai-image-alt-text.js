@@ -12,7 +12,7 @@ export class AiImageAltText extends AiProductManagement {
         };
 
         for (const pattern of patterns) {
-            const { value } = document.querySelector(`[name="${pattern.replace('%locale%', this.data.locale)}"]`);
+            const value = document.querySelector(`[name="${pattern.replace('%locale%', this.data.locale)}"]`)?.value;
 
             if (value) {
                 this.data.imageUrl = value;
@@ -40,7 +40,7 @@ export class AiImageAltText extends AiProductManagement {
                 body: new URLSearchParams(this.data),
             })).json();
 
-            input.value = decodeURI(altText);
+            input.value = decodeURI(altText || '');
         } finally {
             this.modal.classList.remove(this.states.loading);
         }

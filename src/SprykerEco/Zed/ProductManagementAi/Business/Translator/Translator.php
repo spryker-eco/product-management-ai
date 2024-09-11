@@ -10,6 +10,7 @@ namespace SprykerEco\Zed\ProductManagementAi\Business\Translator;
 use Generated\Shared\Transfer\AiTranslatorRequestTransfer;
 use Generated\Shared\Transfer\AiTranslatorResponseTransfer;
 use Generated\Shared\Transfer\OpenAiChatRequestTransfer;
+use Generated\Shared\Transfer\OpenAiChatResponseTransfer;
 use SprykerEco\Zed\ProductManagementAi\Dependency\Client\ProductManagementAiToOpenAiClientInterface;
 use SprykerEco\Zed\ProductManagementAi\ProductManagementAiConfig;
 
@@ -56,7 +57,7 @@ class Translator implements TranslatorInterface
 
         return $this->createTranslatorResponse(
             $aiTranslatorRequestTransfer,
-            $openAiChatResponse->getMessage() ?? static::INVALID_TRANSLATION_MESSAGE,
+            $openAiChatResponse,
         );
     }
 
@@ -90,17 +91,23 @@ class Translator implements TranslatorInterface
 
     /**
      * @param \Generated\Shared\Transfer\AiTranslatorRequestTransfer $aiTranslatorRequestTransfer
-     * @param string $translation
+     * @param \Generated\Shared\Transfer\OpenAiChatResponseTransfer $openAiChatResponseTransfer
      *
      * @return \Generated\Shared\Transfer\AiTranslatorResponseTransfer
      */
     protected function createTranslatorResponse(
         AiTranslatorRequestTransfer $aiTranslatorRequestTransfer,
-        string $translation
+        OpenAiChatResponseTransfer $openAiChatResponseTransfer
     ): AiTranslatorResponseTransfer {
-        return (new AiTranslatorResponseTransfer())->setOriginalText($aiTranslatorRequestTransfer->getTextOrFail())
+        $aiTranslatorResponseTransfer = (new AiTranslatorResponseTransfer())
+            ->setOriginalText($aiTranslatorRequestTransfer->getTextOrFail())
             ->setSourceLocale($aiTranslatorRequestTransfer->getSourceLocaleOrFail())
-            ->setTargetLocale($aiTranslatorRequestTransfer->getTargetLocale())
-            ->setTranslation($translation);
+            ->setTargetLocale($aiTranslatorRequestTransfer->getTargetLocale());
+
+        if (!$openAiChatResponseTransfer->getIsSuccessful() || !$openAiChatResponseTransfer->getMessage()) {
+            return $aiTranslatorResponseTransfer->setTranslation(static::INVALID_TRANSLATION_MESSAGE);
+        }
+
+        return $aiTranslatorResponseTransfer->setTranslation($openAiChatResponseTransfer->getMessage());
     }
 }
