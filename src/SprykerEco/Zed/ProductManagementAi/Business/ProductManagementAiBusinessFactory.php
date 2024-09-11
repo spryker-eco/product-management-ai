@@ -16,7 +16,13 @@ use SprykerEco\Zed\ProductManagementAi\Business\Category\CategoryReader;
 use SprykerEco\Zed\ProductManagementAi\Business\Category\CategoryReaderInterface;
 use SprykerEco\Zed\ProductManagementAi\Business\Generator\ImageAltTextGenerator;
 use SprykerEco\Zed\ProductManagementAi\Business\Generator\ImageAltTextGeneratorInterface;
+use SprykerEco\Zed\ProductManagementAi\Business\Translator\StorageKeyBuilder\StorageKeyBuilder;
+use SprykerEco\Zed\ProductManagementAi\Business\Translator\StorageKeyBuilder\StorageKeyBuilderInterface;
+use SprykerEco\Zed\ProductManagementAi\Business\Translator\Translator;
+use SprykerEco\Zed\ProductManagementAi\Business\Translator\TranslatorCacheAware;
+use SprykerEco\Zed\ProductManagementAi\Business\Translator\TranslatorInterface;
 use SprykerEco\Zed\ProductManagementAi\Dependency\Client\ProductManagementAiToOpenAiClientInterface;
+use SprykerEco\Zed\ProductManagementAi\Dependency\Client\ProductManagementAiToStorageClientInterface;
 use SprykerEco\Zed\ProductManagementAi\Dependency\Facade\ProductManagementAiToCategoryFacadeInterface;
 use SprykerEco\Zed\ProductManagementAi\Dependency\Facade\ProductManagementAiToLocaleFacadeInterface;
 use SprykerEco\Zed\ProductManagementAi\Dependency\Service\ProductManagementAiToUtilEncodingServiceInterface;
@@ -71,6 +77,49 @@ class ProductManagementAiBusinessFactory extends AbstractBusinessFactory
     }
 
     /**
+     * @return \SprykerEco\Zed\ProductManagementAi\Business\Translator\TranslatorInterface
+     */
+    public function createTranslator(): TranslatorInterface
+    {
+        return new Translator(
+            $this->getOpenAiClient(),
+            $this->getConfig(),
+        );
+    }
+
+    /**
+     * @return \SprykerEco\Zed\ProductManagementAi\Business\Translator\TranslatorInterface
+     */
+    public function createTranslatorCacheAware(): TranslatorInterface
+    {
+        return new TranslatorCacheAware(
+            $this->createTranslator(),
+            $this->getStorageClient(),
+            $this->createStorageKeyBuilder(),
+        );
+    }
+
+    /**
+     * @return \SprykerEco\Zed\ProductManagementAi\Business\Translator\StorageKeyBuilder\StorageKeyBuilderInterface
+     */
+    public function createStorageKeyBuilder(): StorageKeyBuilderInterface
+    {
+        return new StorageKeyBuilder();
+    }
+
+    /**
+     * @return \SprykerEco\Zed\ProductManagementAi\Business\Translator\TranslatorInterface
+     */
+    public function getTranslator(): TranslatorInterface
+    {
+        if ($this->getConfig()->isTranslatorCacheEnabled()) {
+            return $this->createTranslatorCacheAware();
+        }
+
+        return $this->createTranslator();
+    }
+
+    /**
      * @return \SprykerEco\Zed\ProductManagementAi\Dependency\Facade\ProductManagementAiToCategoryFacadeInterface
      */
     public function getCategoryFacade(): ProductManagementAiToCategoryFacadeInterface
@@ -100,5 +149,13 @@ class ProductManagementAiBusinessFactory extends AbstractBusinessFactory
     public function getOpenAiClient(): ProductManagementAiToOpenAiClientInterface
     {
         return $this->getProvidedDependency(ProductManagementAiDependencyProvider::CLIENT_OPEN_AI);
+    }
+
+    /**
+     * @return \SprykerEco\Zed\ProductManagementAi\Dependency\Client\ProductManagementAiToStorageClientInterface
+     */
+    public function getStorageClient(): ProductManagementAiToStorageClientInterface
+    {
+        return $this->getProvidedDependency(ProductManagementAiDependencyProvider::CLIENT_STORAGE);
     }
 }

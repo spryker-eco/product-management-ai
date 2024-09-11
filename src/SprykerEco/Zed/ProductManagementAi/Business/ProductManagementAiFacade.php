@@ -7,6 +7,8 @@
 
 namespace SprykerEco\Zed\ProductManagementAi\Business;
 
+use Generated\Shared\Transfer\AiTranslatorRequestTransfer;
+use Generated\Shared\Transfer\AiTranslatorResponseTransfer;
 use Generated\Shared\Transfer\OpenAiChatResponseTransfer;
 use Spryker\Zed\Kernel\Business\AbstractFacade;
 
@@ -47,5 +49,21 @@ class ProductManagementAiFacade extends AbstractFacade implements ProductManagem
         return $this->getFactory()
             ->createImageAltTextGenerator()
             ->generateImageAltText($imageUrl, $targetLocale);
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @api
+     *
+     * @param \Generated\Shared\Transfer\AiTranslatorRequestTransfer $aiTranslatorRequestTransfer
+     *
+     * @return \Generated\Shared\Transfer\AiTranslatorResponseTransfer
+     */
+    public function translate(AiTranslatorRequestTransfer $aiTranslatorRequestTransfer): AiTranslatorResponseTransfer
+    {
+        return $this->getFactory()
+            ->getTranslator()
+            ->translate($aiTranslatorRequestTransfer);
     }
 }

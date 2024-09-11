@@ -7,6 +7,8 @@
 
 namespace SprykerEco\Zed\ProductManagementAi\Business;
 
+use Generated\Shared\Transfer\AiTranslatorRequestTransfer;
+use Generated\Shared\Transfer\AiTranslatorResponseTransfer;
 use Generated\Shared\Transfer\OpenAiChatResponseTransfer;
 
 interface ProductManagementAiFacadeInterface
@@ -36,4 +38,18 @@ interface ProductManagementAiFacadeInterface
      * @return \Generated\Shared\Transfer\OpenAiChatResponseTransfer
      */
     public function generateImageAltText(string $imageUrl, string $targetLocale): OpenAiChatResponseTransfer;
+
+    /**
+     * Specification:
+     * - Translates a text from source locale to target locale.
+     * - Text for translation, source and target locales are provided as properties of `AiTranslatorRequest`.
+     * - Returns `AiTranslatorResponse`.
+     *
+     * @api
+     *
+     * @param \Generated\Shared\Transfer\AiTranslatorRequestTransfer $aiTranslatorRequestTransfer
+     *
+     * @return \Generated\Shared\Transfer\AiTranslatorResponseTransfer
+     */
+    public function translate(AiTranslatorRequestTransfer $aiTranslatorRequestTransfer): AiTranslatorResponseTransfer;
 }

@@ -1,0 +1,34 @@
+<?xml version="1.0"?>
+<transfers xmlns="spryker:transfer-01" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="spryker:transfer-01 http://static.spryker.com/transfer-01.xsd">
+
+    <transfer name="ProductImage">
+        <property name="altText" type="string" strict="true"/>
+    </transfer>
+
+    <transfer name="ProductImageStorage">
+        <property name="altText" type="string" strict="true"/>
+    </transfer>
+
+    <transfer name="OpenAiChatRequest" strict="true">
+        <property name="message" type="string"/>
+    </transfer>
+
+    <transfer name="OpenAiChatResponse" strict="true">
+        <property name="message" type="string"/>
+    </transfer>
+
+    <transfer name="AiTranslatorResponse" strict="true">
+        <property name="originalText" type="string"/>
+        <property name="sourceLocale" type="string"/>
+        <property name="targetLocale" type="string"/>
+        <property name="translation" type="string"/>
+    </transfer>
+
+    <transfer name="AiTranslatorRequest" strict="true">
+        <property name="text" type="string"/>
+        <property name="sourceLocale" type="string"/>
+        <property name="targetLocale" type="string"/>
+        <property name="invalidateCache" type="bool"/>
+    </transfer>
+
+</transfers>

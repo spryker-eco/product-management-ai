@@ -27,3 +27,232 @@
         display: none;
     }
 }
+
+.spinner {
+    display: inline-flex;
+    width: 20px;
+    height: 20px;
+    position: relative;
+    animation: spin-to 1.2s infinite linear;
+
+    &__inner {
+        position: absolute;
+        width: 100%;
+        height: 50%;
+        left: 0;
+
+        &::after,
+        &::before {
+            content: '';
+            width: 9px;
+            height: 9px;
+            position: absolute;
+            background-color: #11856e;
+            opacity: 0.3;
+            animation: spinner-dot-to 1s infinite linear alternate;
+            border-radius: 50%;
+            transform: scale(0.75);
+        }
+
+        &::after {
+            left: 0;
+        }
+
+        &::before {
+            right: 0;
+        }
+
+        &--top {
+            top: 0;
+
+            &::after,
+            &::before {
+                top: 0;
+            }
+
+            &::before {
+                animation-delay: 0.4s;
+            }
+        }
+
+        &--bottom {
+            bottom: 0;
+
+            &::after,
+            &::before {
+                bottom: 0;
+            }
+
+            &::before {
+                animation-delay: 0.8s;
+            }
+
+            &::after {
+                animation-delay: 1.2s;
+            }
+        }
+    }
+}
+
+@keyframes spinner-dot-to {
+    to {
+        opacity: 1;
+    }
+}
+
+.form-group-locale {
+    position: relative;
+
+    .input-group {
+        width: 100%;
+    }
+
+    .input-group .form-control {
+        padding-right: 70px;
+        border-radius: 10px;
+        resize: none;
+        z-index: auto;
+    }
+
+    .translator,
+    .input-group-btn {
+        position: absolute;
+        right: 0;
+        bottom: 6px;
+        z-index: auto;
+    }
+
+    .input-group-btn {
+        width: 30px;
+    }
+
+    .input-group-btn .btn,
+    .btn {
+        height: 24px;
+        width: 24px;
+        border: none !important;
+        border-radius: 50%;
+        padding: 0;
+        margin: 0;
+        z-index: 3;
+        background: none !important;
+        color: #71747b !important;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-size: 12px;
+        border: 1px solid transparent;
+
+        &:focus {
+            box-shadow: none !important;
+        }
+
+        &:hover {
+            background: #f5f5f5 !important;
+            border: 1px solid #b2b2b2 !important;
+            box-shadow: none !important;
+        }
+    }
+
+    .translator {
+        right: 36px;
+
+        &:hover .translator__drop {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        &__drop {
+            transition: all 0.3s ease-in-out;
+            opacity: 0;
+            visibility: hidden;
+            z-index: 5;
+            position: absolute;
+            top: 100%;
+            right: 0;
+            border-radius: 4px;
+            border: 1px solid #dbdbdb;
+            background: #fff;
+            box-shadow: 0px 4px 12px 0px rgba(18, 18, 18, 0.15);
+            padding: 0;
+            list-style: none;
+            min-width: 170px;
+        }
+
+        &__text {
+            display: block;
+            padding: 11px 9px;
+            color: #71747c;
+            font-size: 14px;
+            letter-spacing: 0.07px;
+            font-weight: 500;
+
+            &--link {
+                color: #121212;
+                transition: background 0.3s ease-in-out;
+
+                &:hover {
+                    background: #f6f6f7;
+                }
+            }
+        }
+    }
+}
+
+.help-block-translator {
+    display: none;
+}
+
+.form-group.has-error-translator .help-block-translator {
+    display: block;
+}
+
+.modal--secondary {
+    .modal {
+        &-content {
+            border-radius: 10px;
+        }
+
+        &-title {
+            font-size: 16px;
+            color: #121212;
+        }
+
+        &-body {
+            font-size: 14px;
+            font-weight: 500;
+            color: #4c4c4c;
+            padding-bottom: 10px;
+        }
+
+        &-loading {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+        }
+
+        &-footer {
+            border: none;
+            padding: 15px 30px 30px;
+        }
+
+        &-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+        }
+
+        &-subtitle {
+            padding-bottom: 20px;
+        }
+    }
+
+    .form-group[data-type='input'] textarea {
+        display: none;
+    }
+
+    .form-group[data-type='textarea'] input {
+        display: none;
+    }
+}
