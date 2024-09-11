@@ -5,7 +5,7 @@
  * For full license information, please view the LICENSE file that was distributed with this source code.
  */
 
-namespace src\SprykerEco\Zed\ProductManagementAi\Dependency\Client;
+namespace SprykerEco\Zed\ProductManagementAi\Dependency\Client;
 
 use Generated\Shared\Transfer\CategoryCollectionTransfer;
 use Generated\Shared\Transfer\LocaleTransfer;
@@ -36,6 +36,6 @@ interface ProductManagementAiToProductCategoryFacadeInterface
      */
     public function getCategoryTransferCollectionByIdProductAbstract(
         int $idProductAbstract,
-        LocaleTransfer $localeTransfer,
+        LocaleTransfer $localeTransfer
     ): CategoryCollectionTransfer;
 }

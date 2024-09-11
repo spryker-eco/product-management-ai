@@ -11,10 +11,10 @@ use Spryker\Zed\Kernel\Communication\AbstractCommunicationFactory;
 use SprykerEco\Zed\ProductManagementAi\Communication\Expander\ImageAltTextProductFormExpander;
 use SprykerEco\Zed\ProductManagementAi\Communication\Expander\ImageAltTextProductFormExpanderInterface;
 use SprykerEco\Zed\ProductManagementAi\Communication\Form\DataProvider\ProductCategoryAbstractFormDataProvider;
+use SprykerEco\Zed\ProductManagementAi\Dependency\Client\ProductManagementAiToProductCategoryFacadeInterface;
 use SprykerEco\Zed\ProductManagementAi\Dependency\Facade\ProductManagementAiToCategoryFacadeInterface;
 use SprykerEco\Zed\ProductManagementAi\Dependency\Facade\ProductManagementAiToLocaleFacadeInterface;
 use SprykerEco\Zed\ProductManagementAi\ProductManagementAiDependencyProvider;
-use src\SprykerEco\Zed\ProductManagementAi\Dependency\Client\ProductManagementAiToProductCategoryFacadeInterface;
 
 /**
  * @method \SprykerEco\Zed\ProductManagementAi\ProductManagementAiConfig getConfig()
@@ -60,7 +60,7 @@ class ProductManagementAiCommunicationFactory extends AbstractCommunicationFacto
     }
 
     /**
-     * @return \src\SprykerEco\Zed\ProductManagementAi\Dependency\Client\ProductManagementAiToProductCategoryFacadeInterface
+     * @return \SprykerEco\Zed\ProductManagementAi\Dependency\Client\ProductManagementAiToProductCategoryFacadeInterface
      */
     public function getProductCategoryFacade(): ProductManagementAiToProductCategoryFacadeInterface
     {

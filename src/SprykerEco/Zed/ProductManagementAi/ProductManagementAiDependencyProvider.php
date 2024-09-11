@@ -10,11 +10,11 @@ namespace SprykerEco\Zed\ProductManagementAi;
 use Spryker\Zed\Kernel\AbstractBundleDependencyProvider;
 use Spryker\Zed\Kernel\Container;
 use SprykerEco\Zed\ProductManagementAi\Dependency\Client\ProductManagementAiToOpenAiClientBridge;
+use SprykerEco\Zed\ProductManagementAi\Dependency\Client\ProductManagementAiToProductCategoryFacadeBridge;
 use SprykerEco\Zed\ProductManagementAi\Dependency\Client\ProductManagementAiToStorageClientBridge;
 use SprykerEco\Zed\ProductManagementAi\Dependency\Facade\ProductManagementAiToCategoryFacadeBridge;
 use SprykerEco\Zed\ProductManagementAi\Dependency\Facade\ProductManagementAiToLocaleFacadeBridge;
 use SprykerEco\Zed\ProductManagementAi\Dependency\Service\ProductManagementAiToUtilEncodingServiceBridge;
-use src\SprykerEco\Zed\ProductManagementAi\Dependency\Client\ProductManagementAiToProductCategoryFacadeBridge;
 
 /**
  * @method \SprykerEco\Zed\ProductManagementAi\ProductManagementAiConfig getConfig()
