@@ -20,6 +20,7 @@ class ImageAltTextProductConcreteFormExpanderPlugin extends AbstractPlugin imple
 {
     /**
      * {@inheritDoc}
+     * - Expands ProductConcrete form with image alt text field.
      *
      * @api
      *

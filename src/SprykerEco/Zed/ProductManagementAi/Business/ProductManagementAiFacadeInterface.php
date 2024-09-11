@@ -15,7 +15,7 @@ interface ProductManagementAiFacadeInterface
 {
     /**
      * Specification:
-     * - propose category suggestions based on product name, description and existing categories
+     * - Proposes category suggestions based on product name, description and existing categories.
      *
      * @api
      *

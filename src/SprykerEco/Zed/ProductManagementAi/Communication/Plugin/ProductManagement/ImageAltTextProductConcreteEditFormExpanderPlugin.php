@@ -20,6 +20,7 @@ class ImageAltTextProductConcreteEditFormExpanderPlugin extends AbstractPlugin i
 {
     /**
      * {@inheritDoc}
+     * - Expands ProductConcrete edit form with image alt text field.
      *
      * @api
      *

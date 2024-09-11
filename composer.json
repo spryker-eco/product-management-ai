@@ -15,7 +15,8 @@
         "spryker/symfony": "^3.0.0",
         "spryker/transfer": "^3.27.0",
         "spryker/util-encoding": "^2.0.0",
-        "spryker/storage": "^3.20.0"
+        "spryker/storage": "^3.20.0",
+        "spryker/product-category": "^4.17.0"
     },
     "require-dev": {
         "phpstan/phpstan": "*",

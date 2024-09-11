@@ -9,7 +9,6 @@ namespace SprykerEco\Zed\ProductManagementAi\Communication\Plugin\Product;
 
 use Generated\Shared\Transfer\ProductAbstractTransfer;
 use Spryker\Zed\Kernel\Communication\AbstractPlugin;
-use Spryker\Zed\ProductCategory\Business\ProductCategoryFacade;
 use Spryker\Zed\ProductExtension\Dependency\Plugin\ProductAbstractPostCreatePluginInterface;
 
 /**
@@ -21,7 +20,6 @@ class ProductCategoryProductAbstractPostCreatePlugin extends AbstractPlugin impl
 {
     /**
      * {@inheritDoc}
-     * Specification:
      * - Assign categories to the product abstract after the product abstract is created.
      *
      * @api
@@ -32,11 +30,6 @@ class ProductCategoryProductAbstractPostCreatePlugin extends AbstractPlugin impl
      */
     public function postCreate(ProductAbstractTransfer $productAbstractTransfer): ProductAbstractTransfer
     {
-        $productCategoryFacade = new ProductCategoryFacade();
-        foreach ($productAbstractTransfer->getCategoryIds() as $idCategory) {
-            $productCategoryFacade->createProductCategoryMappings($idCategory, [$productAbstractTransfer->getIdProductAbstract()]);
-        }
-
-        return $productAbstractTransfer;
+        return $this->getFactory()->createProductCategoryHandler()->createProductCategories($productAbstractTransfer);
     }
 }

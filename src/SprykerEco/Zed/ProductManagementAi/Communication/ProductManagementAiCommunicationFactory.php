@@ -8,12 +8,17 @@
 namespace SprykerEco\Zed\ProductManagementAi\Communication;
 
 use Spryker\Zed\Kernel\Communication\AbstractCommunicationFactory;
+use SprykerEco\Zed\ProductManagementAi\Communication\Expander\CategoryIdsProductFormExpander;
+use SprykerEco\Zed\ProductManagementAi\Communication\Expander\CategoryIdsProductFormExpanderInterface;
 use SprykerEco\Zed\ProductManagementAi\Communication\Expander\ImageAltTextProductFormExpander;
 use SprykerEco\Zed\ProductManagementAi\Communication\Expander\ImageAltTextProductFormExpanderInterface;
 use SprykerEco\Zed\ProductManagementAi\Communication\Form\DataProvider\ProductCategoryAbstractFormDataProvider;
-use SprykerEco\Zed\ProductManagementAi\Dependency\Client\ProductManagementAiToProductCategoryFacadeInterface;
+use SprykerEco\Zed\ProductManagementAi\Communication\Form\DataProvider\ProductCategoryAbstractFormDataProviderInterface;
+use SprykerEco\Zed\ProductManagementAi\Communication\Handler\ProductCategoryHandler;
+use SprykerEco\Zed\ProductManagementAi\Communication\Handler\ProductCategoryHandlerInterface;
 use SprykerEco\Zed\ProductManagementAi\Dependency\Facade\ProductManagementAiToCategoryFacadeInterface;
 use SprykerEco\Zed\ProductManagementAi\Dependency\Facade\ProductManagementAiToLocaleFacadeInterface;
+use SprykerEco\Zed\ProductManagementAi\Dependency\Facade\ProductManagementAiToProductCategoryFacadeInterface;
 use SprykerEco\Zed\ProductManagementAi\ProductManagementAiDependencyProvider;
 
 /**
@@ -23,13 +28,14 @@ use SprykerEco\Zed\ProductManagementAi\ProductManagementAiDependencyProvider;
 class ProductManagementAiCommunicationFactory extends AbstractCommunicationFactory
 {
     /**
-     * @return \SprykerEco\Zed\ProductManagementAi\Communication\Form\DataProvider\ProductCategoryAbstractFormDataProvider
+     * @return \SprykerEco\Zed\ProductManagementAi\Communication\Form\DataProvider\ProductCategoryAbstractFormDataProviderInterface
      */
-    public function createProductCategoryAbstractFormDataProvider(): ProductCategoryAbstractFormDataProvider
+    public function createProductCategoryAbstractFormDataProvider(): ProductCategoryAbstractFormDataProviderInterface
     {
         return new ProductCategoryAbstractFormDataProvider(
             $this->getCategoryFacade(),
             $this->getLocaleFacade(),
+            $this->getProductCategoryFacade(),
         );
     }
 
@@ -41,6 +47,25 @@ class ProductManagementAiCommunicationFactory extends AbstractCommunicationFacto
         return new ImageAltTextProductFormExpander(
             $this->getLocaleFacade(),
         );
+    }
+
+    /**
+     * @return \SprykerEco\Zed\ProductManagementAi\Communication\Handler\ProductCategoryHandlerInterface
+     */
+    public function createProductCategoryHandler(): ProductCategoryHandlerInterface
+    {
+        return new ProductCategoryHandler(
+            $this->getProductCategoryFacade(),
+            $this->getLocaleFacade(),
+        );
+    }
+
+    /**
+     * @return \SprykerEco\Zed\ProductManagementAi\Communication\Expander\CategoryIdsProductFormExpanderInterface
+     */
+    public function createCategoryIdsProductFormExpander(): CategoryIdsProductFormExpanderInterface
+    {
+        return new CategoryIdsProductFormExpander($this->createProductCategoryAbstractFormDataProvider());
     }
 
     /**
@@ -60,7 +85,7 @@ class ProductManagementAiCommunicationFactory extends AbstractCommunicationFacto
     }
 
     /**
-     * @return \SprykerEco\Zed\ProductManagementAi\Dependency\Client\ProductManagementAiToProductCategoryFacadeInterface
+     * @return \SprykerEco\Zed\ProductManagementAi\Dependency\Facade\ProductManagementAiToProductCategoryFacadeInterface
      */
     public function getProductCategoryFacade(): ProductManagementAiToProductCategoryFacadeInterface
     {

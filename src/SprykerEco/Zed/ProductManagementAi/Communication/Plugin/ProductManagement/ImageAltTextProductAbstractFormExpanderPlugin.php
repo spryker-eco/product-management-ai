@@ -21,6 +21,8 @@ class ImageAltTextProductAbstractFormExpanderPlugin extends AbstractPlugin imple
 {
     /**
      * {@inheritDoc}
+     * - Expands ProductAbstract form with image alt text field.
+     * - Image alt text field is used to store the alt text of the image.
      *
      * @api
      *
