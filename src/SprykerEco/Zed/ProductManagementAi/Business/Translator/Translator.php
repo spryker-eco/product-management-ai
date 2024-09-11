@@ -86,7 +86,7 @@ class Translator implements TranslatorInterface
      */
     protected function normalizeSourceLocale(AiTranslatorRequestTransfer $aiTranslatorRequestTransfer): AiTranslatorRequestTransfer
     {
-        $sourceLocale = $aiTranslatorRequestTransfer->getSourceLocale() ?? $this->productManagementAiConfig->getDefaultSourceLocale();
+        $sourceLocale = $aiTranslatorRequestTransfer->getSourceLocale() ?? $this->productManagementAiConfig->getDefaultTranslationSourceLocale();
         $aiTranslatorRequestTransfer->setSourceLocale($sourceLocale);
 
         return $aiTranslatorRequestTransfer;

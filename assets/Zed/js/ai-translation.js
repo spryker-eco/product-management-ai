@@ -5,19 +5,21 @@ export class AiTranslation extends AiProductManagement {
     translationData = {};
 
     preparePayload(trigger) {
-        document.querySelectorAll('.js-ai-translation-preview').forEach((field) => field.classList.remove('is-visible'));
+        this.modal.querySelectorAll('.js-ai-translation-control').forEach((field) => field.classList.remove('is-visible'));
 
         this.translationData = {
             fromLocale: trigger.getAttribute('data-from-locale'),
             fieldName: trigger.getAttribute('data-field-name'),
         }
-        this.fieldElement = document.getElementsByName(`${trigger.getAttribute('data-field-pattern')}[${this.translationData.fieldName}]`);
+        const toLocale = trigger.getAttribute('data-to-locale');
+        const targetName = `${trigger.getAttribute('data-field-pattern')}[${this.translationData.fieldName}]`;
+
+        this.fieldElement = document.getElementsByName(targetName)[0];
         this.data = {
             locale: trigger.getAttribute('data-to-locale'),
-            text: this.fieldElement[0].value,
+            text: document.getElementsByName(targetName.replace(toLocale, this.translationData.fromLocale))[0].value,
         }
     }
-
     async processAiAction() {
         if (!this.data.text) {
             this.modal.classList.add(this.states.empty);
@@ -42,7 +44,7 @@ export class AiTranslation extends AiProductManagement {
         field.classList.add('is-visible');
 
         try {
-            const [{ translation }] = await (await fetch(this.url, {
+            const { translation } = await (await fetch(this.url, {
                 method: 'POST',
                 body: data,
             })).json();
@@ -53,10 +55,7 @@ export class AiTranslation extends AiProductManagement {
             this.modal.classList.remove(this.states.loading);
         }
     }
-
     onApply() {
-        const targetPattern = trigger.getAttribute('data-field-pattern').replace(this.translationData.fromLocale, this.data.locale);
-
-        document.getElementsByName(`${targetPattern}[${this.translationData.fieldName}]`).value = this.modal.querySelector(`[name="ai-translation-preview[${this.translationData.fieldName}]"]`).value;
+        this.fieldElement.value = this.modal.querySelector(`[name="ai-translation-preview[${this.translationData.fieldName}]"]`).value;
     }
 }
