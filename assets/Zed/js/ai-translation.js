@@ -11,13 +11,11 @@ export class AiTranslation extends AiProductManagement {
             fromLocale: trigger.getAttribute('data-from-locale'),
             fieldName: trigger.getAttribute('data-field-name'),
         }
-        const toLocale = trigger.getAttribute('data-to-locale');
-        const targetName = `${trigger.getAttribute('data-field-pattern')}[${this.translationData.fieldName}]`;
+        this.fieldElement = document.querySelector(`[name$="${trigger.getAttribute('data-to-locale')}][${this.translationData.fieldName}]"]`);
 
-        this.fieldElement = document.getElementsByName(targetName)[0];
         this.data = {
             locale: trigger.getAttribute('data-to-locale'),
-            text: document.getElementsByName(targetName.replace(toLocale, this.translationData.fromLocale))[0].value,
+            text: document.querySelector(`[name$="${trigger.getAttribute('data-field-locale')}][${this.translationData.fieldName}]"]`).value,
         }
     }
     async processAiAction() {
