@@ -21,6 +21,16 @@ export class AiProductManagement {
         })
     }
 
+    refreshElements() {
+        this.data = null;
+        this.modal.classList.remove(this.states.loading, this.states.empty);
+        this.modal.querySelector('.js-ai-product-management-apply').removeEventListener('click', this.onApply);
+        this.modal.querySelector('.js-ai-product-management-again').removeEventListener('click', this.onAgain);
+
+        this.modal.querySelector('.js-ai-product-management-apply').addEventListener('click', this.onApply);
+        this.modal.querySelector('.js-ai-product-management-again').addEventListener('click', this.onAgain);
+    }
+
     onTriggerClick(event) {
         const trigger = event.currentTarget;
 
@@ -36,6 +46,11 @@ export class AiProductManagement {
         this.processAiAction();
     }
 
+    onAgain() {
+        this.modal.classList.add(this.states.loading);
+        this.processAiAction();
+    }
+
     preparePayload() {
         throw new Error('Method `preparePayload` at AiProductManagement class is not implemented.');
     }
@@ -44,18 +59,7 @@ export class AiProductManagement {
         throw new Error('Method `processAiAction` at AiProductManagement class is not implemented.');
     }
 
-    refreshElements() {
-        this.data = null;
-        this.modal.classList.remove(this.states.loading, this.states.empty);
-        this.modal.querySelector('.js-ai-product-management-apply').removeEventListener('click', this.onApply);
-        this.modal.querySelector('.js-ai-product-management-again').removeEventListener('click', this.onAgain);
-
-        this.modal.querySelector('.js-ai-product-management-apply').addEventListener('click', this.onApply);
-        this.modal.querySelector('.js-ai-product-management-again').addEventListener('click', this.onAgain);
+    onApply() {
+        throw new Error('Method `onApply` at AiProductManagement class is not implemented.');
     }
-
-    onAgain() {
-        this.modal.classList.add(this.states.loading);
-        this.processAiAction();
-    };
 }
