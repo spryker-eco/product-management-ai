@@ -14,7 +14,7 @@ interface ProductManagementAiToProductCategoryFacadeInterface
 {
     /**
      * @param int $idCategory
-     * @param array $productIdsToAssign
+     * @param array<int> $productIdsToAssign
      *
      * @return void
      */
@@ -22,7 +22,7 @@ interface ProductManagementAiToProductCategoryFacadeInterface
 
     /**
      * @param int $idCategory
-     * @param array $productIdsToUnAssign
+     * @param array<int> $productIdsToUnAssign
      *
      * @return void
      */

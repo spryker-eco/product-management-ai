@@ -27,7 +27,7 @@ class ProductManagementAiToProductCategoryFacadeBridge implements ProductManagem
 
     /**
      * @param int $idCategory
-     * @param array $productIdsToAssign
+     * @param array<int> $productIdsToAssign
      *
      * @return void
      */
@@ -38,7 +38,7 @@ class ProductManagementAiToProductCategoryFacadeBridge implements ProductManagem
 
     /**
      * @param int $idCategory
-     * @param array $productIdsToUnAssign
+     * @param array<int> $productIdsToUnAssign
      *
      * @return void
      */
