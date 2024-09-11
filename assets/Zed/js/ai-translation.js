@@ -49,7 +49,7 @@ export class AiTranslation extends AiProductManagement {
                 body: data,
             })).json();
 
-            field.value = decodeURI(translation);
+            field.value = translation;
             this.data.cache = true;
         } finally {
             this.modal.classList.remove(this.states.loading);
