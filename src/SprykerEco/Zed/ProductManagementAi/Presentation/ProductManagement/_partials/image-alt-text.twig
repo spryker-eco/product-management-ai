@@ -11,7 +11,7 @@
         {% endblock %}
 
         {% block trigger %}
-            <button type="button" data-url="/product-management-ai/image-alt-text" data-product-field-pattern="{{ fieldPatter | json_encode }}" data-field-selector="{{ fieldSelector }}" popovertarget="ai-alt-text-modal" class="form-wrapper-clickable-affix__button js-ai-alt-image-trigger btn-naked" title="{{ 'AI assistant' | trans }}">
+            <button type="button" data-url="/product-management-ai/image-alt-text" data-product-field-pattern="{{ fieldPatter | json_encode }}" data-field-selector="{{ fieldSelector }}" popovertarget="ai-alt-text-modal" class="form-wrapper-clickable-affix__trigger js-ai-alt-image-trigger btn-naked" title="{{ 'AI assistant' | trans }}">
                 <span class="fa fa-magic"></span>
             </button>
         {% endblock %}

@@ -21,4 +21,16 @@
             <input class="form-control js-ai-alt-text-input"/>
         {% endblock %}
     {% endembed %}
+
+    {% embed 'ProductManagementAi/_partials/ai-popover.twig' with {
+        id: 'ai-translation-modal',
+        emptyText: 'Please fill in text to translate' | trans,
+    } %}
+        {% block content %}
+            <div class="modal-subtitle">{{ 'Translated to:' | trans }} <strong class="js-translate-to"></strong></div>
+
+            <input name="ai-translation-preview[name]" class="ai-translation-control js-ai-translation-control form-control" />
+            <textarea name="ai-translation-preview[description]" class="ai-translation-control js-ai-translation-control form-control"></textarea>
+        {% endblock %}
+    {% endembed %}
 {% endblock %}
