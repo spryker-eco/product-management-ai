@@ -1,0 +1,11 @@
+parameters:
+    level: 8
+    paths:
+        - src/
+    ignoreErrors:
+        - '#Call to method .+ on an unknown class .+Transfer#'
+        - '#Instantiated class .+Transfer not found#'
+        - '#Method .+ has invalid return type .+Transfer#'
+        - '#Parameter .+ has invalid type .+Transfer#'
+        - '#Call .+ on an unknown class .+AutoCompletion.#'
+        - '#Access to constant .+ on an unknown class .+Transfer.#'

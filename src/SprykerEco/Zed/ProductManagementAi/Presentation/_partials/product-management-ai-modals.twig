@@ -1,0 +1,36 @@
+{% block body %}
+    {% block assets %}
+        <link rel="stylesheet" href="{{ assetsPath('css/spryker-ai-category-suggestion-product-management-ai.css') }}"/>
+        <script src="{{ assetsPath('js/spryker-ai-category-suggestion-product-management-ai.js') }}"></script>
+    {% endblock %}
+
+    {% embed 'ProductManagementAi/_partials/ai-popover.twig' with {
+        id: 'ai-category-modal',
+        emptyText: 'Please fill in the product name and description for at least one locale' | trans,
+    } %}
+        {% block content %}
+            <select multiple dropdown-parent=".js-modal-body" class="js-ai-category-select spryker-form-select2combobox"></select>
+        {% endblock %}
+    {% endembed %}
+
+    {% embed 'ProductManagementAi/_partials/ai-popover.twig' with {
+        id: 'ai-alt-text-modal',
+        emptyText: 'Please fill in the product image url' | trans,
+    } %}
+        {% block content %}
+            <input class="form-control js-ai-alt-text-input"/>
+        {% endblock %}
+    {% endembed %}
+
+    {% embed 'ProductManagementAi/_partials/ai-popover.twig' with {
+        id: 'ai-translation-modal',
+        emptyText: 'Please fill in text to translate' | trans,
+    } %}
+        {% block content %}
+            <div class="modal-subtitle">{{ 'Translated to:' | trans }} <strong class="js-translate-to"></strong></div>
+
+            <input name="ai-translation-preview[name]" class="ai-translation-control js-ai-translation-control form-control" />
+            <textarea name="ai-translation-preview[description]" class="ai-translation-control js-ai-translation-control form-control"></textarea>
+        {% endblock %}
+    {% endembed %}
+{% endblock %}

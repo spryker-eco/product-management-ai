@@ -1,0 +1,7 @@
+{
+    "include": {
+        "spryker/product": "Required to use Product plugins.",
+        "spryker/gui": "If you want to use GUI layout templates.",
+        "spryker/transfer": "Provides transfer objects definition with strict types."
+    }
+}

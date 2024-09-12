@@ -1,0 +1,52 @@
+{
+    "name": "spryker-eco/product-management-ai",
+    "type": "library",
+    "description": "ProductManagementAi module",
+    "license": "MIT",
+    "require": {
+        "php": ">=8.1",
+        "spryker-eco/open-ai": "^0.1.0",
+        "spryker/category": "^5.0.0",
+        "spryker/gui": "^3.45.0",
+        "spryker/kernel": "^3.33.0",
+        "spryker/locale": "^4.0.0",
+        "spryker/product": "^6.0.0",
+        "spryker/product-category": "^4.17.0",
+        "spryker/product-extension": "^1.1.0",
+        "spryker/product-management-extension": "^1.2.0",
+        "spryker/symfony": "^3.0.0",
+        "spryker/transfer": "^3.27.0",
+        "spryker/util-encoding": "^2.0.0"
+    },
+    "require-dev": {
+        "phpstan/phpstan": "*",
+        "spryker/code-sniffer": "*"
+    },
+    "suggest": {
+        "spryker/propel-orm": "Used for Propel schema generation."
+    },
+    "autoload": {
+        "psr-4": {
+            "SprykerEco\\": "src/SprykerEco/"
+        }
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true,
+    "scripts": {
+        "cs-check": "phpcs -p -s --standard=vendor/spryker/code-sniffer/SprykerStrict/ruleset.xml src/",
+        "cs-fix": "phpcbf -p --standard=vendor/spryker/code-sniffer/SprykerStrict/ruleset.xml src/",
+        "stan": "phpstan analyse -c phpstan.neon -l 8 src/"
+    },
+    "extra": {
+        "branch-alias": {
+            "dev-master": "1.0.x-dev"
+        }
+    },
+    "config": {
+        "sort-packages": true,
+        "allow-plugins": {
+            "dealerdirect/phpcodesniffer-composer-installer": true,
+            "php-http/discovery": false
+        }
+    }
+}

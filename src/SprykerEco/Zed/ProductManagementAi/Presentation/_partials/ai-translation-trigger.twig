@@ -1,0 +1,40 @@
+{% set fieldLocale = locale.localeName %}
+
+{% block body %}
+    <div class="form-wrapper-clickable-affix">
+        {% block input %}{% endblock %}
+
+        {% block trigger %}
+            {% set fromLocale = locale.localeName %}
+
+            <div class="form-wrapper-clickable-affix__trigger">
+                <button type="button" class="btn-naked" title="{{ 'AI assistant' | trans }}">
+                    <span class="fa fa-magic"></span>
+                </button>
+
+                <ul class="ai-translator">
+                    <li><h5>{{ 'Translate to:' | trans }}</h5></li>
+
+                    {% for locale in localeCollection %}
+                        {% if fromLocale != locale.localeName  %}
+                            <li>
+                                <button
+                                    popovertarget="ai-translation-modal"
+                                    type="button"
+                                    class="js-ai-translation-trigger btn-naked"
+                                    data-to-locale="{{ locale.localeName }}"
+                                    data-url="/product-management-ai/translate"
+                                    data-field-locale="{{ fieldLocale }}"
+                                    data-field-name="{{ input.vars.name  }}"
+                                    data-from-locale="{{ fromLocale }}"
+                                >
+                                    {{ locale.localeName }}
+                                </button>
+                            </li>
+                        {% endif %}
+                    {% endfor %}
+                </ul>
+            </div>
+        {% endblock %}
+    </div>
+{% endblock %}

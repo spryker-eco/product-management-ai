@@ -1,0 +1,76 @@
+.ai-product-management-modal {
+    &.is-loading & {
+        &__loading {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+        }
+    }
+
+    &.is-empty & {
+        &__empty {
+            display: block;
+        }
+    }
+
+    &.is-empty &,
+    &.is-loading & {
+        &__actions,
+        &__content {
+            display: none;
+        }
+    }
+
+    &__loading,
+    &__empty {
+        display: none;
+    }
+}
+
+.form-wrapper-clickable-affix {
+    &:has(.input-group-btn) {
+        .form-wrapper-clickable-affix__trigger {
+            right: 40px;
+            z-index: 10;
+        }
+    }
+
+    &:has(.form-wrapper-clickable-affix__trigger:hover) .ai-translator {
+        opacity: 1;
+        visibility: visible;
+    }
+
+    .ai-translator {
+        transition: all 0.3s ease-in-out;
+        opacity: 0;
+        visibility: hidden;
+        z-index: 5;
+        position: absolute;
+        top: 100%;
+        right: 0;
+        border-radius: 4px;
+        background: #fff;
+        padding: 0;
+        list-style: none;
+        width: max-content;
+
+        li:not(:has(.btn-naked)) {
+            padding: 0 10px;
+        }
+
+        .btn-naked {
+            width: 100%;
+            text-align: left;
+            padding: 5px 10px;
+
+            &:hover {
+                background: #f8f8f8;
+            }
+        }
+    }
+}
+
+.ai-translation-control:not(.is-visible) {
+    display: none;
+}
