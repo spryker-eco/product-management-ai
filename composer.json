@@ -5,7 +5,7 @@
     "license": "MIT",
     "require": {
         "php": ">=8.1",
-        "spryker-eco/open-ai": "dev-feature/demo/dev-ai-integrations",
+        "spryker-eco/open-ai": "^1.0.0",
         "spryker/category": "^5.0.0",
         "spryker/gui": "^3.45.0",
         "spryker/kernel": "^3.33.0",
@@ -32,12 +32,6 @@
     },
     "minimum-stability": "dev",
     "prefer-stable": true,
-    "repositories": [
-        {
-            "type": "vcs",
-            "url": "git@github.com:spryker-eco/open-ai.git"
-        }
-    ],
     "scripts": {
         "cs-check": "phpcs -p -s --standard=vendor/spryker/code-sniffer/SprykerStrict/ruleset.xml src/",
         "cs-fix": "phpcbf -p --standard=vendor/spryker/code-sniffer/SprykerStrict/ruleset.xml src/",
