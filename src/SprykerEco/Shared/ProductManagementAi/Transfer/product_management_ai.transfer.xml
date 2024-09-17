@@ -42,9 +42,11 @@
     </transfer>
 
     <transfer name="ProductAbstract">
+        <property name="categoryIds" type="int[]" singular="idCategory"/>
     </transfer>
 
     <transfer name="Locale">
+        <property name="localeName" type="string"/>
     </transfer>
 
 </transfers>
