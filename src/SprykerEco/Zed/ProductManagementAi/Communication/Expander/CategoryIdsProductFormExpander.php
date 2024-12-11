@@ -1,8 +1,8 @@
 <?php
 
 /**
- * MIT License
- * For full license information, please view the LICENSE file that was distributed with this source code.
+ * Copyright © 2016-present Spryker Systems GmbH. All rights reserved.
+ * Use of this software requires acceptance of the Evaluation License Agreement. See LICENSE file.
  */
 
 namespace SprykerEco\Zed\ProductManagementAi\Communication\Expander;
@@ -37,8 +37,6 @@ class CategoryIdsProductFormExpander implements CategoryIdsProductFormExpanderIn
     }
 
     /**
-     * @SuppressWarnings(PHPMD.UnusedLocalVariable)
-     *
      * @param \Symfony\Component\Form\FormBuilderInterface $builder
      * @param array<string, mixed> $options
      *
