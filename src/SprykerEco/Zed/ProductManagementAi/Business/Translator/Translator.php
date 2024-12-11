@@ -37,7 +37,7 @@ class Translator implements TranslatorInterface
      */
     public function __construct(
         ProductManagementAiToOpenAiClientInterface $openAiClient,
-        ProductManagementAiConfig $productManagementAiConfig,
+        ProductManagementAiConfig $productManagementAiConfig
     ) {
         $this->openAiClient = $openAiClient;
         $this->productManagementAiConfig = $productManagementAiConfig;
@@ -97,7 +97,7 @@ class Translator implements TranslatorInterface
      */
     protected function createTranslatorResponse(
         AiTranslatorRequestTransfer $aiTranslatorRequestTransfer,
-        OpenAiChatResponseTransfer $openAiChatResponseTransfer,
+        OpenAiChatResponseTransfer $openAiChatResponseTransfer
     ): AiTranslatorResponseTransfer {
         $aiTranslatorResponseTransfer = (new AiTranslatorResponseTransfer())
             ->setOriginalText($aiTranslatorRequestTransfer->getTextOrFail())

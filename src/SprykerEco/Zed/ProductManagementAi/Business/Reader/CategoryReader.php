@@ -28,7 +28,7 @@ class CategoryReader implements CategoryReaderInterface
      */
     public function __construct(
         ProductManagementAiToCategoryFacadeInterface $categoryFacade,
-        ProductManagementAiToLocaleFacadeInterface $localeFacade,
+        ProductManagementAiToLocaleFacadeInterface $localeFacade
     ) {
         $this->categoryFacade = $categoryFacade;
         $this->localeFacade = $localeFacade;

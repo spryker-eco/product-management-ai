@@ -38,7 +38,7 @@ class ImageAltTextGenerator implements ImageAltTextGeneratorInterface
     public function __construct(
         ProductManagementAiToOpenAiClientInterface $openAiClient,
         PromptBuilderInterface $promptBuilder,
-        ProductManagementAiConfig $productManagementAiConfig,
+        ProductManagementAiConfig $productManagementAiConfig
     ) {
         $this->openAiClient = $openAiClient;
         $this->promptBuilder = $promptBuilder;

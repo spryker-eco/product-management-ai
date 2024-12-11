@@ -36,7 +36,7 @@ class ProductCategoryAbstractFormDataProvider implements ProductCategoryAbstract
     public function __construct(
         ProductManagementAiToCategoryFacadeInterface $categoryFacade,
         ProductManagementAiToLocaleFacadeInterface $localeFacade,
-        ProductManagementAiToProductCategoryFacadeInterface $productCategoryFacade,
+        ProductManagementAiToProductCategoryFacadeInterface $productCategoryFacade
     ) {
         $this->categoryFacade = $categoryFacade;
         $this->localeFacade = $localeFacade;

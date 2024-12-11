@@ -45,7 +45,7 @@ class CategoryProposer implements CategoryProposerInterface
         ProductManagementAiToOpenAiClientInterface $openAiClient,
         ProductManagementAiToUtilEncodingServiceInterface $utilEncodingService,
         CategoryReaderInterface $categoryReader,
-        ProductManagementAiConfig $productManagementAiConfig,
+        ProductManagementAiConfig $productManagementAiConfig
     ) {
         $this->openAiClient = $openAiClient;
         $this->utilEncodingService = $utilEncodingService;

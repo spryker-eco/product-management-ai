@@ -55,7 +55,7 @@ class ProductManagementAiToProductCategoryFacadeBridge implements ProductManagem
      */
     public function getCategoryTransferCollectionByIdProductAbstract(
         int $idProductAbstract,
-        LocaleTransfer $localeTransfer,
+        LocaleTransfer $localeTransfer
     ): CategoryCollectionTransfer {
         return $this->productCategoryFacade->getCategoryTransferCollectionByIdProductAbstract($idProductAbstract, $localeTransfer);
     }

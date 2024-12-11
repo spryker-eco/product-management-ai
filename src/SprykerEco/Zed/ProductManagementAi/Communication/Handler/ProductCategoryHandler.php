@@ -29,7 +29,7 @@ class ProductCategoryHandler implements ProductCategoryHandlerInterface
      */
     public function __construct(
         ProductManagementAiToProductCategoryFacadeInterface $productCategoryFacade,
-        ProductManagementAiToLocaleFacadeInterface $localeFacade,
+        ProductManagementAiToLocaleFacadeInterface $localeFacade
     ) {
         $this->productCategoryFacade = $productCategoryFacade;
         $this->localeFacade = $localeFacade;

@@ -36,6 +36,6 @@ interface ProductManagementAiToProductCategoryFacadeInterface
      */
     public function getCategoryTransferCollectionByIdProductAbstract(
         int $idProductAbstract,
-        LocaleTransfer $localeTransfer,
+        LocaleTransfer $localeTransfer
     ): CategoryCollectionTransfer;
 }
