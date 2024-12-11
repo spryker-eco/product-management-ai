@@ -37,8 +37,6 @@ class CategoryIdsProductFormExpander implements CategoryIdsProductFormExpanderIn
     }
 
     /**
-     * @SuppressWarnings(PHPMD.UnusedLocalVariable)
-     *
      * @param \Symfony\Component\Form\FormBuilderInterface $builder
      * @param array<string, mixed> $options
      *
