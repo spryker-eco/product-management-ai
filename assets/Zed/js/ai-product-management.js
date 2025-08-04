@@ -16,9 +16,15 @@ export class AiProductManagement {
     url = null;
 
     init() {
-        document.querySelectorAll(this.triggerSelector).forEach((trigger) => {
-            trigger.addEventListener('click', this.onTriggerClick.bind(this));
-        })
+        document.addEventListener('click', (event) => {
+            const targetElement = event.target.closest(this.triggerSelector);
+            if (!targetElement) {
+                return;
+            }
+
+            const modifiedEvent = { ...event, currentTarget: targetElement };
+            this.onTriggerClick(modifiedEvent);
+        });
     }
 
     refreshElements() {
