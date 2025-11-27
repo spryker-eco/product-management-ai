@@ -52,15 +52,15 @@ class ImageAltTextController extends AbstractController
             return $this->getErrorJsonResponse('ImageUrl and/or target locale are missing from request.');
         }
 
-        $openAiChatResponseTransfer = $this->getFacade()->generateImageAltText($imageUrl, $targetLocale);
-        if (!$openAiChatResponseTransfer->getIsSuccessful()) {
-            return $this->getErrorJsonResponse($openAiChatResponseTransfer->getMessage());
+        $promptResponseTransfer = $this->getFacade()->generateImageAltText($imageUrl, $targetLocale);
+        $altText = $promptResponseTransfer->getMessage()->getContent();
+
+        if (!$altText) {
+            return $this->getErrorJsonResponse('Unable to generate alt text for the provided image.');
         }
 
         return $this->jsonResponse([
-            'altText' => $this->getFacade()
-                ->generateImageAltText($imageUrl, $targetLocale)
-                ->getMessageOrFail(),
+            'altText' => $altText,
         ]);
     }
 

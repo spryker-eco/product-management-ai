@@ -7,9 +7,8 @@
 
 namespace SprykerEco\Zed\ProductManagementAi\Business;
 
+use Spryker\Client\AiFoundation\AiFoundationClientInterface;
 use Spryker\Zed\Kernel\Business\AbstractBusinessFactory;
-use SprykerEco\Zed\ProductManagementAi\Business\Builder\PromptBuilder;
-use SprykerEco\Zed\ProductManagementAi\Business\Builder\PromptBuilderInterface;
 use SprykerEco\Zed\ProductManagementAi\Business\Generator\ImageAltTextGenerator;
 use SprykerEco\Zed\ProductManagementAi\Business\Generator\ImageAltTextGeneratorInterface;
 use SprykerEco\Zed\ProductManagementAi\Business\Proposer\CategoryProposer;
@@ -18,7 +17,6 @@ use SprykerEco\Zed\ProductManagementAi\Business\Reader\CategoryReader;
 use SprykerEco\Zed\ProductManagementAi\Business\Reader\CategoryReaderInterface;
 use SprykerEco\Zed\ProductManagementAi\Business\Translator\Translator;
 use SprykerEco\Zed\ProductManagementAi\Business\Translator\TranslatorInterface;
-use SprykerEco\Zed\ProductManagementAi\Dependency\Client\ProductManagementAiToOpenAiClientInterface;
 use SprykerEco\Zed\ProductManagementAi\Dependency\Facade\ProductManagementAiToCategoryFacadeInterface;
 use SprykerEco\Zed\ProductManagementAi\Dependency\Facade\ProductManagementAiToLocaleFacadeInterface;
 use SprykerEco\Zed\ProductManagementAi\Dependency\Service\ProductManagementAiToUtilEncodingServiceInterface;
@@ -46,7 +44,7 @@ class ProductManagementAiBusinessFactory extends AbstractBusinessFactory
     public function createCategoryProposer(): CategoryProposerInterface
     {
         return new CategoryProposer(
-            $this->getOpenAiClient(),
+            $this->getAiFoundationClient(),
             $this->getUtilEncodingService(),
             $this->createCategoryReader(),
             $this->getConfig(),
@@ -59,18 +57,9 @@ class ProductManagementAiBusinessFactory extends AbstractBusinessFactory
     public function createImageAltTextGenerator(): ImageAltTextGeneratorInterface
     {
         return new ImageAltTextGenerator(
-            $this->getOpenAiClient(),
-            $this->createPromptBuilder(),
+            $this->getAiFoundationClient(),
             $this->getConfig(),
         );
-    }
-
-    /**
-     * @return \SprykerEco\Zed\ProductManagementAi\Business\Builder\PromptBuilderInterface
-     */
-    public function createPromptBuilder(): PromptBuilderInterface
-    {
-        return new PromptBuilder($this->getConfig());
     }
 
     /**
@@ -79,7 +68,7 @@ class ProductManagementAiBusinessFactory extends AbstractBusinessFactory
     public function createTranslator(): TranslatorInterface
     {
         return new Translator(
-            $this->getOpenAiClient(),
+            $this->getAiFoundationClient(),
             $this->getConfig(),
         );
     }
@@ -109,10 +98,10 @@ class ProductManagementAiBusinessFactory extends AbstractBusinessFactory
     }
 
     /**
-     * @return \SprykerEco\Zed\ProductManagementAi\Dependency\Client\ProductManagementAiToOpenAiClientInterface
+     * @return \Spryker\Client\AiFoundation\AiFoundationClientInterface
      */
-    public function getOpenAiClient(): ProductManagementAiToOpenAiClientInterface
+    public function getAiFoundationClient(): AiFoundationClientInterface
     {
-        return $this->getProvidedDependency(ProductManagementAiDependencyProvider::CLIENT_OPEN_AI);
+        return $this->getProvidedDependency(ProductManagementAiDependencyProvider::CLIENT_AI_FOUNDATION);
     }
 }

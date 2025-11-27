@@ -7,23 +7,24 @@
 
 namespace SprykerEco\Zed\ProductManagementAi\Business\Generator;
 
-use Generated\Shared\Transfer\OpenAiChatRequestTransfer;
-use Generated\Shared\Transfer\OpenAiChatResponseTransfer;
-use SprykerEco\Zed\ProductManagementAi\Business\Builder\PromptBuilderInterface;
-use SprykerEco\Zed\ProductManagementAi\Dependency\Client\ProductManagementAiToOpenAiClientInterface;
+use Exception;
+use Generated\Shared\Transfer\AttachmentTransfer;
+use Generated\Shared\Transfer\PromptMessageTransfer;
+use Generated\Shared\Transfer\PromptRequestTransfer;
+use Generated\Shared\Transfer\PromptResponseTransfer;
+use Spryker\Client\AiFoundation\AiFoundationClientInterface;
+use Spryker\Shared\AiFoundation\AiFoundationConstants;
+use Spryker\Shared\Log\LoggerTrait;
 use SprykerEco\Zed\ProductManagementAi\ProductManagementAiConfig;
 
 class ImageAltTextGenerator implements ImageAltTextGeneratorInterface
 {
-    /**
-     * @var \SprykerEco\Zed\ProductManagementAi\Dependency\Client\ProductManagementAiToOpenAiClientInterface
-     */
-    protected ProductManagementAiToOpenAiClientInterface $openAiClient;
+    use LoggerTrait;
 
     /**
-     * @var \SprykerEco\Zed\ProductManagementAi\Business\Builder\PromptBuilderInterface
+     * @var \Spryker\Client\AiFoundation\AiFoundationClientInterface
      */
-    protected PromptBuilderInterface $promptBuilder;
+    protected AiFoundationClientInterface $aiFoundationClient;
 
     /**
      * @var \SprykerEco\Zed\ProductManagementAi\ProductManagementAiConfig
@@ -31,17 +32,14 @@ class ImageAltTextGenerator implements ImageAltTextGeneratorInterface
     protected ProductManagementAiConfig $productManagementAiConfig;
 
     /**
-     * @param \SprykerEco\Zed\ProductManagementAi\Dependency\Client\ProductManagementAiToOpenAiClientInterface $openAiClient
-     * @param \SprykerEco\Zed\ProductManagementAi\Business\Builder\PromptBuilderInterface $promptBuilder
+     * @param \Spryker\Client\AiFoundation\AiFoundationClientInterface $aiFoundationClient
      * @param \SprykerEco\Zed\ProductManagementAi\ProductManagementAiConfig $productManagementAiConfig
      */
     public function __construct(
-        ProductManagementAiToOpenAiClientInterface $openAiClient,
-        PromptBuilderInterface $promptBuilder,
+        AiFoundationClientInterface $aiFoundationClient,
         ProductManagementAiConfig $productManagementAiConfig
     ) {
-        $this->openAiClient = $openAiClient;
-        $this->promptBuilder = $promptBuilder;
+        $this->aiFoundationClient = $aiFoundationClient;
         $this->productManagementAiConfig = $productManagementAiConfig;
     }
 
@@ -49,14 +47,33 @@ class ImageAltTextGenerator implements ImageAltTextGeneratorInterface
      * @param string $imageUrl
      * @param string $targetLocale
      *
-     * @return \Generated\Shared\Transfer\OpenAiChatResponseTransfer
+     * @return \Generated\Shared\Transfer\PromptResponseTransfer
      */
-    public function generateImageAltText(string $imageUrl, string $targetLocale): OpenAiChatResponseTransfer
+    public function generateImageAltText(string $imageUrl, string $targetLocale): PromptResponseTransfer
     {
-        $openAiChatRequestTransfer = (new OpenAiChatRequestTransfer())->setPromptData(
-            $this->promptBuilder->buildImageAltTextPrompt($imageUrl, $targetLocale),
-        )->setModel($this->productManagementAiConfig->getOpenAiGpt4oMiniModel());
+        $promptRequestTransfer = (new PromptRequestTransfer())
+            ->setPromptMessage(
+                (new PromptMessageTransfer())
+                    ->setContent($this->productManagementAiConfig->getImageAltTextPrompt($targetLocale))
+                    ->addAttachment((new AttachmentTransfer())
+                        ->setType(AiFoundationConstants::ATTACHMENT_TYPE_IMAGE)
+                        ->setContentType(AiFoundationConstants::ATTACHMENT_CONTENT_TYPE_URL)
+                        ->setType(AiFoundationConstants::ATTACHMENT_TYPE_IMAGE)
+                        ->setContent($imageUrl)),
+            );
 
-        return $this->openAiClient->chat($openAiChatRequestTransfer);
+        try {
+            $promptResponseTransfer = $this->aiFoundationClient->prompt($promptRequestTransfer);
+        } catch (Exception $exception) {
+            $this->getLogger()->critical($exception->getMessage(), $exception->getTrace());
+
+            return (new PromptResponseTransfer())
+                ->setMessage(
+                    (new PromptMessageTransfer())
+                        ->setContent(''),
+                );
+        }
+
+        return $promptResponseTransfer;
     }
 }
