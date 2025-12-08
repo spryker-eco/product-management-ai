@@ -51,7 +51,7 @@
 
     <transfer name="PromptMessage">
         <property name="content" type="string"/>
-        <property name="contentData" type="array"/>
+        <property name="contentData" type="array" singular="contentData"/>
         <property name="attachments" type="Attachment[]" singular="attachment"/>
     </transfer>
 
