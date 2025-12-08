@@ -40,10 +40,9 @@
         <property name="localeName" type="string"/>
     </transfer>
 
-
     <transfer name="PromptRequest" strict="true">
         <property name="promptMessage" type="PromptMessage"/>
-        <property name="aiEngine" type="string" description="The configuration name of ai engine"/>
+        <property name="aiConfigurationName" type="string" description="The configuration name of ai configuration"/>
     </transfer>
 
     <transfer name="PromptResponse">
