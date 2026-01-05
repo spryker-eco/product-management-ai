@@ -7,24 +7,29 @@
 
 namespace SprykerEco\Zed\ProductManagementAi\Business\Translator;
 
+use Exception;
 use Generated\Shared\Transfer\AiTranslatorRequestTransfer;
 use Generated\Shared\Transfer\AiTranslatorResponseTransfer;
-use Generated\Shared\Transfer\OpenAiChatRequestTransfer;
-use Generated\Shared\Transfer\OpenAiChatResponseTransfer;
-use SprykerEco\Zed\ProductManagementAi\Dependency\Client\ProductManagementAiToOpenAiClientInterface;
+use Generated\Shared\Transfer\PromptMessageTransfer;
+use Generated\Shared\Transfer\PromptRequestTransfer;
+use Generated\Shared\Transfer\PromptResponseTransfer;
+use Spryker\Client\AiFoundation\AiFoundationClientInterface;
+use Spryker\Shared\Log\LoggerTrait;
 use SprykerEco\Zed\ProductManagementAi\ProductManagementAiConfig;
 
 class Translator implements TranslatorInterface
 {
+    use LoggerTrait;
+
     /**
      * @var string
      */
     protected const INVALID_TRANSLATION_MESSAGE = 'Unable to translate provided text.';
 
     /**
-     * @var \SprykerEco\Zed\ProductManagementAi\Dependency\Client\ProductManagementAiToOpenAiClientInterface
+     * @var \Spryker\Client\AiFoundation\AiFoundationClientInterface
      */
-    protected ProductManagementAiToOpenAiClientInterface $openAiClient;
+    protected AiFoundationClientInterface $aiFoundationClient;
 
     /**
      * @var \SprykerEco\Zed\ProductManagementAi\ProductManagementAiConfig
@@ -32,14 +37,14 @@ class Translator implements TranslatorInterface
     protected ProductManagementAiConfig $productManagementAiConfig;
 
     /**
-     * @param \SprykerEco\Zed\ProductManagementAi\Dependency\Client\ProductManagementAiToOpenAiClientInterface $openAiClient
+     * @param \Spryker\Client\AiFoundation\AiFoundationClientInterface $aiFoundationClient
      * @param \SprykerEco\Zed\ProductManagementAi\ProductManagementAiConfig $productManagementAiConfig
      */
     public function __construct(
-        ProductManagementAiToOpenAiClientInterface $openAiClient,
+        AiFoundationClientInterface $aiFoundationClient,
         ProductManagementAiConfig $productManagementAiConfig
     ) {
-        $this->openAiClient = $openAiClient;
+        $this->aiFoundationClient = $aiFoundationClient;
         $this->productManagementAiConfig = $productManagementAiConfig;
     }
 
@@ -51,13 +56,23 @@ class Translator implements TranslatorInterface
     public function translate(AiTranslatorRequestTransfer $aiTranslatorRequestTransfer): AiTranslatorResponseTransfer
     {
         $aiTranslatorRequestTransfer = $this->normalizeSourceLocale($aiTranslatorRequestTransfer);
-        $openAiChatRequestTransfer = (new OpenAiChatRequestTransfer())
-            ->setMessage($this->buildTranslationRequestPrompt($aiTranslatorRequestTransfer));
-        $openAiChatResponse = $this->openAiClient->chat($openAiChatRequestTransfer);
+        $promptRequestTransfer = (new PromptRequestTransfer())
+            ->setPromptMessage(
+                (new PromptMessageTransfer())
+                    ->setContent($this->buildTranslationRequestPrompt($aiTranslatorRequestTransfer)),
+            );
+
+        try {
+            $promptResponse = $this->aiFoundationClient->prompt($promptRequestTransfer);
+        } catch (Exception $exception) {
+            $this->getLogger()->critical($exception->getMessage(), $exception->getTrace());
+
+            return $this->createInvalidTranslatorResponse($aiTranslatorRequestTransfer);
+        }
 
         return $this->createTranslatorResponse(
             $aiTranslatorRequestTransfer,
-            $openAiChatResponse,
+            $promptResponse,
         );
     }
 
@@ -91,23 +106,41 @@ class Translator implements TranslatorInterface
 
     /**
      * @param \Generated\Shared\Transfer\AiTranslatorRequestTransfer $aiTranslatorRequestTransfer
-     * @param \Generated\Shared\Transfer\OpenAiChatResponseTransfer $openAiChatResponseTransfer
+     * @param \Generated\Shared\Transfer\PromptResponseTransfer $promptResponseTransfer
      *
      * @return \Generated\Shared\Transfer\AiTranslatorResponseTransfer
      */
     protected function createTranslatorResponse(
         AiTranslatorRequestTransfer $aiTranslatorRequestTransfer,
-        OpenAiChatResponseTransfer $openAiChatResponseTransfer
+        PromptResponseTransfer $promptResponseTransfer
     ): AiTranslatorResponseTransfer {
-        $aiTranslatorResponseTransfer = (new AiTranslatorResponseTransfer())
+        $aiTranslatorResponseTransfer = $this->createBaseTranslatorResponse($aiTranslatorRequestTransfer);
+
+        return $aiTranslatorResponseTransfer->setTranslation($promptResponseTransfer->getMessage()->getContent());
+    }
+
+    /**
+     * @param \Generated\Shared\Transfer\AiTranslatorRequestTransfer $aiTranslatorRequestTransfer
+     *
+     * @return \Generated\Shared\Transfer\AiTranslatorResponseTransfer
+     */
+    protected function createInvalidTranslatorResponse(AiTranslatorRequestTransfer $aiTranslatorRequestTransfer): AiTranslatorResponseTransfer
+    {
+        $aiTranslatorResponseTransfer = $this->createBaseTranslatorResponse($aiTranslatorRequestTransfer);
+
+        return $aiTranslatorResponseTransfer->setTranslation(static::INVALID_TRANSLATION_MESSAGE);
+    }
+
+    /**
+     * @param \Generated\Shared\Transfer\AiTranslatorRequestTransfer $aiTranslatorRequestTransfer
+     *
+     * @return \Generated\Shared\Transfer\AiTranslatorResponseTransfer
+     */
+    protected function createBaseTranslatorResponse(AiTranslatorRequestTransfer $aiTranslatorRequestTransfer): AiTranslatorResponseTransfer
+    {
+        return (new AiTranslatorResponseTransfer())
             ->setOriginalText($aiTranslatorRequestTransfer->getTextOrFail())
             ->setSourceLocale($aiTranslatorRequestTransfer->getSourceLocaleOrFail())
             ->setTargetLocale($aiTranslatorRequestTransfer->getTargetLocale());
-
-        if (!$openAiChatResponseTransfer->getIsSuccessful() || !$openAiChatResponseTransfer->getMessage()) {
-            return $aiTranslatorResponseTransfer->setTranslation(static::INVALID_TRANSLATION_MESSAGE);
-        }
-
-        return $aiTranslatorResponseTransfer->setTranslation($openAiChatResponseTransfer->getMessage());
     }
 }

@@ -9,15 +9,6 @@
         <property name="altText" type="string" strict="true"/>
     </transfer>
 
-    <transfer name="OpenAiChatRequest" strict="true">
-        <property name="message" type="string"/>
-    </transfer>
-
-    <transfer name="OpenAiChatResponse" strict="true">
-        <property name="isSuccessful" type="bool"/>
-        <property name="message" type="string"/>
-    </transfer>
-
     <transfer name="AiTranslatorResponse" strict="true">
         <property name="originalText" type="string"/>
         <property name="sourceLocale" type="string"/>
@@ -47,6 +38,28 @@
 
     <transfer name="Locale">
         <property name="localeName" type="string"/>
+    </transfer>
+
+    <transfer name="PromptRequest" strict="true">
+        <property name="promptMessage" type="PromptMessage"/>
+        <property name="aiConfigurationName" type="string" description="The configuration name of ai configuration"/>
+    </transfer>
+
+    <transfer name="PromptResponse">
+        <property name="message" type="PromptMessage"/>
+    </transfer>
+
+    <transfer name="PromptMessage">
+        <property name="content" type="string"/>
+        <property name="contentData" type="array" singular="contentData"/>
+        <property name="attachments" type="Attachment[]" singular="attachment"/>
+    </transfer>
+
+    <transfer name="Attachment">
+        <property name="type" type="string"/>
+        <property name="content" type="string"/>
+        <property name="contentType" type="string"/>
+        <property name="mediaType" type="string"/>
     </transfer>
 
 </transfers>

@@ -7,18 +7,23 @@
 
 namespace SprykerEco\Zed\ProductManagementAi\Business\Proposer;
 
-use Generated\Shared\Transfer\OpenAiChatRequestTransfer;
+use Exception;
+use Generated\Shared\Transfer\PromptMessageTransfer;
+use Generated\Shared\Transfer\PromptRequestTransfer;
+use Spryker\Client\AiFoundation\AiFoundationClientInterface;
+use Spryker\Shared\Log\LoggerTrait;
 use SprykerEco\Zed\ProductManagementAi\Business\Reader\CategoryReaderInterface;
-use SprykerEco\Zed\ProductManagementAi\Dependency\Client\ProductManagementAiToOpenAiClientInterface;
 use SprykerEco\Zed\ProductManagementAi\Dependency\Service\ProductManagementAiToUtilEncodingServiceInterface;
 use SprykerEco\Zed\ProductManagementAi\ProductManagementAiConfig;
 
 class CategoryProposer implements CategoryProposerInterface
 {
+    use LoggerTrait;
+
     /**
-     * @var \SprykerEco\Zed\ProductManagementAi\Dependency\Client\ProductManagementAiToOpenAiClientInterface
+     * @var \Spryker\Client\AiFoundation\AiFoundationClientInterface
      */
-    protected ProductManagementAiToOpenAiClientInterface $openAiClient;
+    protected AiFoundationClientInterface $aiFoundationClient;
 
     /**
      * @var \SprykerEco\Zed\ProductManagementAi\Dependency\Service\ProductManagementAiToUtilEncodingServiceInterface
@@ -36,18 +41,18 @@ class CategoryProposer implements CategoryProposerInterface
     protected ProductManagementAiConfig $productManagementAiConfig;
 
     /**
-     * @param \SprykerEco\Zed\ProductManagementAi\Dependency\Client\ProductManagementAiToOpenAiClientInterface $openAiClient
+     * @param \Spryker\Client\AiFoundation\AiFoundationClientInterface $aiFoundationClient
      * @param \SprykerEco\Zed\ProductManagementAi\Dependency\Service\ProductManagementAiToUtilEncodingServiceInterface $utilEncodingService
      * @param \SprykerEco\Zed\ProductManagementAi\Business\Reader\CategoryReaderInterface $categoryReader
      * @param \SprykerEco\Zed\ProductManagementAi\ProductManagementAiConfig $productManagementAiConfig
      */
     public function __construct(
-        ProductManagementAiToOpenAiClientInterface $openAiClient,
+        AiFoundationClientInterface $aiFoundationClient,
         ProductManagementAiToUtilEncodingServiceInterface $utilEncodingService,
         CategoryReaderInterface $categoryReader,
         ProductManagementAiConfig $productManagementAiConfig
     ) {
-        $this->openAiClient = $openAiClient;
+        $this->aiFoundationClient = $aiFoundationClient;
         $this->utilEncodingService = $utilEncodingService;
         $this->categoryReader = $categoryReader;
         $this->productManagementAiConfig = $productManagementAiConfig;
@@ -66,16 +71,24 @@ class CategoryProposer implements CategoryProposerInterface
             return [];
         }
 
-        $openAiChatRequestTransfer = (new OpenAiChatRequestTransfer())
-            ->setMessage($this->generatePrompt($productName, $description, $categories));
+        $promptRequestTransfer = (new PromptRequestTransfer())
+            ->setPromptMessage(
+                (new PromptMessageTransfer())
+                    ->setContent($this->generatePrompt($productName, $description, $categories)),
+            );
 
-        $openAiChatResponseTransfer = $this->openAiClient->chat($openAiChatRequestTransfer);
+        try {
+            $promptResponseTransfer = $this->aiFoundationClient->prompt($promptRequestTransfer);
+        } catch (Exception $exception) {
+            $this->getLogger()->critical($exception->getMessage(), $exception->getTrace());
 
-        if (!$openAiChatResponseTransfer->getMessage() || !$openAiChatResponseTransfer->getIsSuccessful()) {
             return [];
         }
 
-        $proposedCategories = $this->utilEncodingService->decodeJson($openAiChatResponseTransfer->getMessage(), true);
+        $proposedCategories = $this->utilEncodingService->decodeJson(
+            $promptResponseTransfer->getMessage()->getContent(),
+            true,
+        );
 
         return is_array($proposedCategories) ? $proposedCategories : [];
     }

@@ -9,7 +9,6 @@ namespace SprykerEco\Zed\ProductManagementAi;
 
 use Spryker\Zed\Kernel\AbstractBundleDependencyProvider;
 use Spryker\Zed\Kernel\Container;
-use SprykerEco\Zed\ProductManagementAi\Dependency\Client\ProductManagementAiToOpenAiClientBridge;
 use SprykerEco\Zed\ProductManagementAi\Dependency\Facade\ProductManagementAiToCategoryFacadeBridge;
 use SprykerEco\Zed\ProductManagementAi\Dependency\Facade\ProductManagementAiToLocaleFacadeBridge;
 use SprykerEco\Zed\ProductManagementAi\Dependency\Facade\ProductManagementAiToProductCategoryFacadeBridge;
@@ -43,7 +42,7 @@ class ProductManagementAiDependencyProvider extends AbstractBundleDependencyProv
     /**
      * @var string
      */
-    public const CLIENT_OPEN_AI = 'CLIENT_OPEN_AI';
+    public const CLIENT_AI_FOUNDATION = 'CLIENT_AI_FOUNDATION';
 
     /**
      * @param \Spryker\Zed\Kernel\Container $container
@@ -55,7 +54,7 @@ class ProductManagementAiDependencyProvider extends AbstractBundleDependencyProv
         $container = $this->addCategoryFacade($container);
         $container = $this->addLocaleFacade($container);
         $container = $this->addUtilEncodingService($container);
-        $container = $this->addOpenAiClient($container);
+        $container = $this->addAiFoundationClient($container);
 
         return $container;
     }
@@ -121,10 +120,10 @@ class ProductManagementAiDependencyProvider extends AbstractBundleDependencyProv
      *
      * @return \Spryker\Zed\Kernel\Container
      */
-    protected function addOpenAiClient(Container $container): Container
+    protected function addAiFoundationClient(Container $container): Container
     {
-        $container->set(static::CLIENT_OPEN_AI, function (Container $container) {
-            return new ProductManagementAiToOpenAiClientBridge($container->getLocator()->openAi()->client());
+        $container->set(static::CLIENT_AI_FOUNDATION, function (Container $container) {
+            return $container->getLocator()->aiFoundation()->client();
         });
 
         return $container;
