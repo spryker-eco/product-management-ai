@@ -1,15 +1,13 @@
 {% block body %}
-    <dialog popover id="{{ id }}" class="ai-product-management-modal modal-popover">
+    <dialog popover id="{{ id }}" class="ai-product-management-modal modal-popover" role="dialog">
         {% block modal %}
             <div class="modal">
                 <div class="modal-dialog">
                     <div class="modal-content">
                         {% block header %}
                             <div class="modal-header">
-                                <button type="button" class="close" popovertarget="{{ id }}" aria-label="Close">
-                                    <span aria-hidden="true">&times;</span>
-                                </button>
                                 <h4 class="modal-title">{{ 'AI assistant' | trans }}</h4>
+                                <button type="button" class="btn-close" popovertarget="{{ id }}" popovertargetaction="hide" aria-label="{{ 'Close' | trans }}"></button>
                             </div>
                         {% endblock %}
 
