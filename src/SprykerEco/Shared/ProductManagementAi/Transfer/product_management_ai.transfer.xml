@@ -14,6 +14,8 @@
         <property name="sourceLocale" type="string"/>
         <property name="targetLocale" type="string"/>
         <property name="translation" type="string"/>
+        <property name="isSuccessful" type="bool"/>
+        <property name="errors" type="Error[]" singular="error"/>
     </transfer>
 
     <transfer name="AiTranslatorRequest" strict="true">
@@ -60,6 +62,61 @@
         <property name="content" type="string"/>
         <property name="contentType" type="string"/>
         <property name="mediaType" type="string"/>
+    </transfer>
+
+    <transfer name="CategorySuggestionRequest" strict="true">
+        <property name="productName" type="string"/>
+        <property name="productDescription" type="string"/>
+    </transfer>
+
+    <transfer name="CategorySuggestionResponse" strict="true">
+        <property name="suggestions" type="CategorySuggestionItem[]" singular="suggestion"/>
+        <property name="isSuccessful" type="bool"/>
+        <property name="errors" type="Error[]" singular="error"/>
+    </transfer>
+
+    <transfer name="CategorySuggestionItem" strict="true">
+        <property name="categoryId" type="int" description="The unique identifier of the category from the existing category list"/>
+        <property name="categoryName" type="string" description="The name of the category that matches the product"/>
+    </transfer>
+
+    <transfer name="CategorySuggestionStructured" strict="true">
+        <property name="categories" type="CategorySuggestionItem[]" singular="category" description="List of suggested categories that best fit the product based on its name and description"/>
+    </transfer>
+
+    <transfer name="AiTranslationStructured" strict="true">
+        <property name="translation" type="string" description="The translated text in the target locale"/>
+    </transfer>
+
+    <transfer name="ImageAltTextRequest" strict="true">
+        <property name="imageUrl" type="string"/>
+        <property name="targetLocale" type="string"/>
+    </transfer>
+
+    <transfer name="ImageAltTextResponse" strict="true">
+        <property name="altText" type="string"/>
+        <property name="isSuccessful" type="bool"/>
+        <property name="errors" type="Error[]" singular="error"/>
+    </transfer>
+
+    <transfer name="ImageAltTextStructured" strict="true">
+        <property name="altText" type="string" description="The generated alt text for the image optimized for SEO"/>
+    </transfer>
+
+    <transfer name="ContentImproverRequest" strict="true">
+        <property name="text" type="string"/>
+        <property name="invalidateCache" type="bool"/>
+    </transfer>
+
+    <transfer name="ContentImproverResponse" strict="true">
+        <property name="originalText" type="string"/>
+        <property name="improvedText" type="string"/>
+        <property name="isSuccessful" type="bool"/>
+        <property name="errors" type="Error[]" singular="error"/>
+    </transfer>
+
+    <transfer name="ContentImproverStructured" strict="true">
+        <property name="improvedText" type="string" description="The improved and enhanced version of the original text with better clarity, grammar, and structure"/>
     </transfer>
 
 </transfers>

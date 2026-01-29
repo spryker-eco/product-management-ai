@@ -8,7 +8,7 @@
 namespace SprykerEco\Zed\ProductManagementAi\Communication\Controller;
 
 use ArrayObject;
-use Generated\Shared\Transfer\ImageAltTextRequestTransfer;
+use Generated\Shared\Transfer\ContentImproverRequestTransfer;
 use Spryker\Zed\Kernel\Communication\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -18,17 +18,17 @@ use Symfony\Component\HttpFoundation\Response;
  * @method \SprykerEco\Zed\ProductManagementAi\Communication\ProductManagementAiCommunicationFactory getFactory()
  * @method \SprykerEco\Zed\ProductManagementAi\Business\ProductManagementAiFacadeInterface getFacade()
  */
-class ImageAltTextController extends AbstractController
+class ContentImproverController extends AbstractController
 {
     /**
      * @var string
      */
-    protected const PARAM_IMAGE_URL = 'imageUrl';
+    protected const PARAM_TEXT = 'text';
 
     /**
      * @var string
      */
-    protected const PARAM_LOCALE = 'locale';
+    protected const PARAM_INVALIDATE_CACHE = 'invalidate_cache';
 
     /**
      * @param \Symfony\Component\HttpFoundation\Request $request
@@ -37,35 +37,33 @@ class ImageAltTextController extends AbstractController
      */
     public function indexAction(Request $request): JsonResponse
     {
-        $imageUrl = $request->get(static::PARAM_IMAGE_URL);
-        $targetLocale = $request->get(static::PARAM_LOCALE);
+        $text = $request->get(static::PARAM_TEXT);
 
-        if (!$imageUrl || !$targetLocale) {
+        if (!$text) {
             return $this->jsonResponse(
                 [
                     'error' => 'Bad request',
-                    'message' => 'ImageUrl and/or target locale are missing from request.',
+                    'message' => 'Text is missing from request.',
                 ],
                 Response::HTTP_BAD_REQUEST,
             );
         }
 
-        $imageAltTextRequestTransfer = (new ImageAltTextRequestTransfer())
-            ->setImageUrl($imageUrl)
-            ->setTargetLocale($targetLocale);
+        $contentImproverRequestTransfer = (new ContentImproverRequestTransfer())
+            ->setText($text)
+            ->setInvalidateCache((bool)$request->get(static::PARAM_INVALIDATE_CACHE, false));
 
-        $imageAltTextResponseTransfer = $this->getFacade()
-            ->generateImageAltText($imageAltTextRequestTransfer);
+        $contentImproverResponseTransfer = $this->getFacade()->improveContent($contentImproverRequestTransfer);
 
-        if (!$imageAltTextResponseTransfer->getIsSuccessful()) {
+        if (!$contentImproverResponseTransfer->getIsSuccessful()) {
             return $this->jsonResponse(
-                ['errors' => $this->formatErrors($imageAltTextResponseTransfer->getErrors())],
+                ['errors' => $this->formatErrors($contentImproverResponseTransfer->getErrors())],
                 Response::HTTP_UNPROCESSABLE_ENTITY,
             );
         }
 
         return $this->jsonResponse([
-            'altText' => $imageAltTextResponseTransfer->getAltTextOrFail(),
+            'improvedText' => $contentImproverResponseTransfer->getImprovedTextOrFail(),
         ]);
     }
 

@@ -9,7 +9,12 @@ namespace SprykerEco\Zed\ProductManagementAi\Business;
 
 use Generated\Shared\Transfer\AiTranslatorRequestTransfer;
 use Generated\Shared\Transfer\AiTranslatorResponseTransfer;
-use Generated\Shared\Transfer\PromptResponseTransfer;
+use Generated\Shared\Transfer\CategorySuggestionRequestTransfer;
+use Generated\Shared\Transfer\CategorySuggestionResponseTransfer;
+use Generated\Shared\Transfer\ContentImproverRequestTransfer;
+use Generated\Shared\Transfer\ContentImproverResponseTransfer;
+use Generated\Shared\Transfer\ImageAltTextRequestTransfer;
+use Generated\Shared\Transfer\ImageAltTextResponseTransfer;
 use Spryker\Zed\Kernel\Business\AbstractFacade;
 
 /**
@@ -22,16 +27,16 @@ class ProductManagementAiFacade extends AbstractFacade implements ProductManagem
      *
      * @api
      *
-     * @param string $productName
-     * @param string $description
+     * @param \Generated\Shared\Transfer\CategorySuggestionRequestTransfer $categorySuggestionRequestTransfer
      *
-     * @return array<string, int>
+     * @return \Generated\Shared\Transfer\CategorySuggestionResponseTransfer
      */
-    public function proposeCategorySuggestions(string $productName, string $description): array
-    {
+    public function proposeCategorySuggestions(
+        CategorySuggestionRequestTransfer $categorySuggestionRequestTransfer
+    ): CategorySuggestionResponseTransfer {
         return $this->getFactory()
             ->createCategoryProposer()
-            ->proposeCategorySuggestions($productName, $description);
+            ->proposeCategorySuggestions($categorySuggestionRequestTransfer);
     }
 
     /**
@@ -39,16 +44,16 @@ class ProductManagementAiFacade extends AbstractFacade implements ProductManagem
      *
      * @api
      *
-     * @param string $imageUrl
-     * @param string $targetLocale
+     * @param \Generated\Shared\Transfer\ImageAltTextRequestTransfer $imageAltTextRequestTransfer
      *
-     * @return \Generated\Shared\Transfer\PromptResponseTransfer
+     * @return \Generated\Shared\Transfer\ImageAltTextResponseTransfer
      */
-    public function generateImageAltText(string $imageUrl, string $targetLocale): PromptResponseTransfer
-    {
+    public function generateImageAltText(
+        ImageAltTextRequestTransfer $imageAltTextRequestTransfer
+    ): ImageAltTextResponseTransfer {
         return $this->getFactory()
             ->createImageAltTextGenerator()
-            ->generateImageAltText($imageUrl, $targetLocale);
+            ->generateImageAltText($imageAltTextRequestTransfer);
     }
 
     /**
@@ -65,5 +70,21 @@ class ProductManagementAiFacade extends AbstractFacade implements ProductManagem
         return $this->getFactory()
             ->createTranslator()
             ->translate($aiTranslatorRequestTransfer);
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @api
+     *
+     * @param \Generated\Shared\Transfer\ContentImproverRequestTransfer $contentImproverRequestTransfer
+     *
+     * @return \Generated\Shared\Transfer\ContentImproverResponseTransfer
+     */
+    public function improveContent(ContentImproverRequestTransfer $contentImproverRequestTransfer): ContentImproverResponseTransfer
+    {
+        return $this->getFactory()
+            ->createContentImprover()
+            ->improveContent($contentImproverRequestTransfer);
     }
 }

@@ -7,6 +7,8 @@
 
 namespace SprykerEco\Zed\ProductManagementAi\Communication\Controller;
 
+use ArrayObject;
+use Generated\Shared\Transfer\CategorySuggestionRequestTransfer;
 use Spryker\Zed\Kernel\Communication\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -42,8 +44,54 @@ class CategorySuggestionController extends AbstractController
             return new JsonResponse(null, Response::HTTP_BAD_REQUEST);
         }
 
+        $categorySuggestionRequestTransfer = (new CategorySuggestionRequestTransfer())
+            ->setProductName($productName)
+            ->setProductDescription($description);
+
+        $categorySuggestionResponseTransfer = $this->getFacade()
+            ->proposeCategorySuggestions($categorySuggestionRequestTransfer);
+
+        if (!$categorySuggestionResponseTransfer->getIsSuccessful()) {
+            return new JsonResponse(
+                ['errors' => $this->formatErrors($categorySuggestionResponseTransfer->getErrors())],
+                Response::HTTP_UNPROCESSABLE_ENTITY,
+            );
+        }
+
         return new JsonResponse([
-            'categories' => $this->getFacade()->proposeCategorySuggestions($productName, $description),
+            'categories' => $this->formatSuggestions($categorySuggestionResponseTransfer->getSuggestions()),
         ]);
+    }
+
+    /**
+     * @param \ArrayObject<int, \Generated\Shared\Transfer\ErrorTransfer> $errors
+     *
+     * @return array<int, array<string, string>>
+     */
+    protected function formatErrors(ArrayObject $errors): array
+    {
+        $formatted = [];
+        foreach ($errors as $errorTransfer) {
+            $formatted[] = [
+                'message' => $errorTransfer->getMessageOrFail(),
+            ];
+        }
+
+        return $formatted;
+    }
+
+    /**
+     * @param \ArrayObject<int, \Generated\Shared\Transfer\CategorySuggestionItemTransfer> $suggestions
+     *
+     * @return array<string, int>
+     */
+    protected function formatSuggestions(ArrayObject $suggestions): array
+    {
+        $formatted = [];
+        foreach ($suggestions as $suggestionTransfer) {
+            $formatted[$suggestionTransfer->getCategoryNameOrFail()] = $suggestionTransfer->getCategoryIdOrFail();
+        }
+
+        return $formatted;
     }
 }

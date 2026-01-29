@@ -7,6 +7,7 @@
 
 namespace SprykerEco\Zed\ProductManagementAi\Communication\Controller;
 
+use ArrayObject;
 use Generated\Shared\Transfer\AiTranslatorRequestTransfer;
 use Spryker\Zed\Kernel\Communication\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -63,11 +64,36 @@ class TranslateController extends AbstractController
             ->setTargetLocale($targetLocale)
             ->setText($text)
             ->setInvalidateCache((bool)$request->get(static::PARAM_INVALIDATE_CACHE, false));
+
         $translationResponseTransfer = $this->getFacade()->translate($translatorRequestTransfer);
+
+        if (!$translationResponseTransfer->getIsSuccessful()) {
+            return $this->jsonResponse(
+                ['errors' => $this->formatErrors($translationResponseTransfer->getErrors())],
+                Response::HTTP_UNPROCESSABLE_ENTITY,
+            );
+        }
 
         return $this->jsonResponse([
             'locale' => $translationResponseTransfer->getTargetLocaleOrFail(),
             'translation' => $translationResponseTransfer->getTranslationOrFail(),
         ]);
+    }
+
+    /**
+     * @param \ArrayObject<int, \Generated\Shared\Transfer\ErrorTransfer> $errors
+     *
+     * @return array<int, array<string, string>>
+     */
+    protected function formatErrors(ArrayObject $errors): array
+    {
+        $formatted = [];
+        foreach ($errors as $errorTransfer) {
+            $formatted[] = [
+                'message' => $errorTransfer->getMessageOrFail(),
+            ];
+        }
+
+        return $formatted;
     }
 }

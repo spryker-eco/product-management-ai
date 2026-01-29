@@ -8,24 +8,18 @@
 namespace SprykerEco\Zed\ProductManagementAi\Business\Translator;
 
 use Exception;
+use Generated\Shared\Transfer\AiTranslationStructuredTransfer;
 use Generated\Shared\Transfer\AiTranslatorRequestTransfer;
 use Generated\Shared\Transfer\AiTranslatorResponseTransfer;
+use Generated\Shared\Transfer\ErrorTransfer;
 use Generated\Shared\Transfer\PromptMessageTransfer;
 use Generated\Shared\Transfer\PromptRequestTransfer;
 use Generated\Shared\Transfer\PromptResponseTransfer;
 use Spryker\Client\AiFoundation\AiFoundationClientInterface;
-use Spryker\Shared\Log\LoggerTrait;
 use SprykerEco\Zed\ProductManagementAi\ProductManagementAiConfig;
 
 class Translator implements TranslatorInterface
 {
-    use LoggerTrait;
-
-    /**
-     * @var string
-     */
-    protected const INVALID_TRANSLATION_MESSAGE = 'Unable to translate provided text.';
-
     /**
      * @var \Spryker\Client\AiFoundation\AiFoundationClientInterface
      */
@@ -56,24 +50,40 @@ class Translator implements TranslatorInterface
     public function translate(AiTranslatorRequestTransfer $aiTranslatorRequestTransfer): AiTranslatorResponseTransfer
     {
         $aiTranslatorRequestTransfer = $this->normalizeSourceLocale($aiTranslatorRequestTransfer);
+
+        $promptContent = $this->buildTranslationRequestPrompt($aiTranslatorRequestTransfer);
+        $structuredSchema = new AiTranslationStructuredTransfer();
+
         $promptRequestTransfer = (new PromptRequestTransfer())
             ->setPromptMessage(
-                (new PromptMessageTransfer())
-                    ->setContent($this->buildTranslationRequestPrompt($aiTranslatorRequestTransfer)),
-            );
+                (new PromptMessageTransfer())->setContent($promptContent),
+            )
+            ->setStructuredMessage($structuredSchema)
+            ->setMaxRetries(3);
 
-        try {
-            $promptResponse = $this->aiFoundationClient->prompt($promptRequestTransfer);
-        } catch (Exception $exception) {
-            $this->getLogger()->critical($exception->getMessage(), $exception->getTrace());
-
-            return $this->createInvalidTranslatorResponse($aiTranslatorRequestTransfer);
+        $aiConfigurationName = $this->productManagementAiConfig->getTranslationAiConfigurationName();
+        if ($aiConfigurationName !== null) {
+            $promptRequestTransfer->setAiConfigurationName($aiConfigurationName);
         }
 
-        return $this->createTranslatorResponse(
-            $aiTranslatorRequestTransfer,
-            $promptResponse,
-        );
+        try {
+            $promptResponseTransfer = $this->aiFoundationClient->prompt($promptRequestTransfer);
+
+            return $this->mapPromptResponseToTranslatorResponse(
+                $promptResponseTransfer,
+                $aiTranslatorRequestTransfer,
+            );
+        } catch (Exception $exception) {
+            return (new AiTranslatorResponseTransfer())
+                ->setOriginalText($aiTranslatorRequestTransfer->getTextOrFail())
+                ->setSourceLocale($aiTranslatorRequestTransfer->getSourceLocaleOrFail())
+                ->setTargetLocale($aiTranslatorRequestTransfer->getTargetLocale())
+                ->setIsSuccessful(false)
+                ->addError(
+                    (new ErrorTransfer())
+                        ->setMessage($exception->getMessage()),
+                );
+        }
     }
 
     /**
@@ -105,42 +115,34 @@ class Translator implements TranslatorInterface
     }
 
     /**
-     * @param \Generated\Shared\Transfer\AiTranslatorRequestTransfer $aiTranslatorRequestTransfer
      * @param \Generated\Shared\Transfer\PromptResponseTransfer $promptResponseTransfer
+     * @param \Generated\Shared\Transfer\AiTranslatorRequestTransfer $aiTranslatorRequestTransfer
      *
      * @return \Generated\Shared\Transfer\AiTranslatorResponseTransfer
      */
-    protected function createTranslatorResponse(
-        AiTranslatorRequestTransfer $aiTranslatorRequestTransfer,
-        PromptResponseTransfer $promptResponseTransfer
+    protected function mapPromptResponseToTranslatorResponse(
+        PromptResponseTransfer $promptResponseTransfer,
+        AiTranslatorRequestTransfer $aiTranslatorRequestTransfer
     ): AiTranslatorResponseTransfer {
-        $aiTranslatorResponseTransfer = $this->createBaseTranslatorResponse($aiTranslatorRequestTransfer);
-
-        return $aiTranslatorResponseTransfer->setTranslation($promptResponseTransfer->getMessage()->getContent());
-    }
-
-    /**
-     * @param \Generated\Shared\Transfer\AiTranslatorRequestTransfer $aiTranslatorRequestTransfer
-     *
-     * @return \Generated\Shared\Transfer\AiTranslatorResponseTransfer
-     */
-    protected function createInvalidTranslatorResponse(AiTranslatorRequestTransfer $aiTranslatorRequestTransfer): AiTranslatorResponseTransfer
-    {
-        $aiTranslatorResponseTransfer = $this->createBaseTranslatorResponse($aiTranslatorRequestTransfer);
-
-        return $aiTranslatorResponseTransfer->setTranslation(static::INVALID_TRANSLATION_MESSAGE);
-    }
-
-    /**
-     * @param \Generated\Shared\Transfer\AiTranslatorRequestTransfer $aiTranslatorRequestTransfer
-     *
-     * @return \Generated\Shared\Transfer\AiTranslatorResponseTransfer
-     */
-    protected function createBaseTranslatorResponse(AiTranslatorRequestTransfer $aiTranslatorRequestTransfer): AiTranslatorResponseTransfer
-    {
-        return (new AiTranslatorResponseTransfer())
+        $aiTranslatorResponseTransfer = (new AiTranslatorResponseTransfer())
             ->setOriginalText($aiTranslatorRequestTransfer->getTextOrFail())
             ->setSourceLocale($aiTranslatorRequestTransfer->getSourceLocaleOrFail())
-            ->setTargetLocale($aiTranslatorRequestTransfer->getTargetLocale());
+            ->setTargetLocale($aiTranslatorRequestTransfer->getTargetLocale())
+            ->setIsSuccessful($promptResponseTransfer->getIsSuccessful());
+
+        foreach ($promptResponseTransfer->getErrors() as $errorTransfer) {
+            $aiTranslatorResponseTransfer->addError($errorTransfer);
+        }
+
+        if (!$promptResponseTransfer->getIsSuccessful()) {
+            return $aiTranslatorResponseTransfer;
+        }
+
+        $structuredMessage = $promptResponseTransfer->getStructuredMessage();
+        if ($structuredMessage instanceof AiTranslationStructuredTransfer) {
+            $aiTranslatorResponseTransfer->setTranslation($structuredMessage->getTranslation());
+        }
+
+        return $aiTranslatorResponseTransfer;
     }
 }

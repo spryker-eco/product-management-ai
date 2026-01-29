@@ -7,15 +7,17 @@
 
 namespace SprykerEco\Zed\ProductManagementAi\Business\Generator;
 
-use Generated\Shared\Transfer\PromptResponseTransfer;
+use Generated\Shared\Transfer\ImageAltTextRequestTransfer;
+use Generated\Shared\Transfer\ImageAltTextResponseTransfer;
 
 interface ImageAltTextGeneratorInterface
 {
     /**
-     * @param string $imageUrl
-     * @param string $targetLocale
+     * @param \Generated\Shared\Transfer\ImageAltTextRequestTransfer $imageAltTextRequestTransfer
      *
-     * @return \Generated\Shared\Transfer\PromptResponseTransfer
+     * @return \Generated\Shared\Transfer\ImageAltTextResponseTransfer
      */
-    public function generateImageAltText(string $imageUrl, string $targetLocale): PromptResponseTransfer;
+    public function generateImageAltText(
+        ImageAltTextRequestTransfer $imageAltTextRequestTransfer
+    ): ImageAltTextResponseTransfer;
 }

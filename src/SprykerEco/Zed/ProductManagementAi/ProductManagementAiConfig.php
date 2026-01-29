@@ -21,8 +21,7 @@ class ProductManagementAiConfig extends AbstractBundleConfig
      */
     protected const AI_TRANSLATION_PROMPT_TEMPLATE = 'Support me in translating the following text `%s` from %s locale to %s locale(s) for an online shop, ensuring native speaker fluency.
         Generate accurate and contextually fitting translations to enhance the user experience.
-        The texts to be translated may contain URLs, URL paths, HTML, unicode characters or some word enclosed by the character "%%", please don\'t translate them.
-        IMPORTANT: ONLY RETURN THE TRANSLATED TEXT AND NOTHING ELSE.';
+        The texts to be translated may contain URLs, URL paths, HTML, unicode characters or some word enclosed by the character "%%", please don\'t translate them.';
 
     /**
      * @var string
@@ -30,10 +29,15 @@ class ProductManagementAiConfig extends AbstractBundleConfig
     protected const PRODUCT_CATEGORY_SUGGESTION_PROMPT_TEMPLATE = 'Based on the provided product name and description, suggest the most fitting product categories from the existing categories list for optimal placement in an e-commerce store.
         Product name: %s
         Product description: %s
-        Existing categories:
-        %s
+        Existing categories in format {"categoryName": "categoryId", ...}:
+        %s';
 
-        Provide only the suggested categories as your output as key and value';
+    /**
+     * @var string
+     */
+    protected const CONTENT_IMPROVER_PROMPT_TEMPLATE = 'Improve the following text for an e-commerce product by enhancing clarity, grammar, structure, and readability while maintaining the original meaning and tone.
+        Make it more professional and engaging for potential customers.
+        Text to improve: %s';
 
     /**
      * @api
@@ -45,7 +49,7 @@ class ProductManagementAiConfig extends AbstractBundleConfig
     public function getImageAltTextPrompt(string $locale): string
     {
         return sprintf(
-            'Describe the most important characteristics of the main object you can identify in the image e.g. manufacturer, model, color, part number or any identification number that help me to define the HTML alt text for best SEO using the language from locale %s. Your output must be ony a list of the product attributes. Remove the attribute names and keep only the values from your output and provide them in a single line.',
+            'Describe the most important characteristics of the main object you can identify in the image e.g. manufacturer, model, color, part number or any identification number that help me to define the HTML alt text for best SEO using the language from locale %s.',
             $locale,
         );
     }
@@ -87,5 +91,78 @@ class ProductManagementAiConfig extends AbstractBundleConfig
     public function getProductCategorySuggestionPromptTemplate(): string
     {
         return static::PRODUCT_CATEGORY_SUGGESTION_PROMPT_TEMPLATE;
+    }
+
+    /**
+     * Specification:
+     * - Returns AI configuration name for category suggestions defined in \Spryker\Shared\AiFoundation\AiFoundationConstants::AI_CONFIGURATIONS.
+     * - Returns null to use default AI configuration.
+     * - If null is returned, the default AI configuration will be used \Spryker\Shared\AiFoundation\AiFoundationConstants::AI_CONFIGURATION_DEFAULT
+     *
+     * @api
+     *
+     * @return string|null
+     */
+    public function getCategorySuggestionAiConfigurationName(): ?string
+    {
+        return null;
+    }
+
+    /**
+     * Specification:
+     * - Returns AI configuration name for translation defined in \Spryker\Shared\AiFoundation\AiFoundationConstants::AI_CONFIGURATIONS.
+     * - Returns null to use default AI configuration.
+     * - If null is returned, the default AI configuration will be used \Spryker\Shared\AiFoundation\AiFoundationConstants::AI_CONFIGURATION_DEFAULT
+     *
+     * @api
+     *
+     * @return string|null
+     */
+    public function getTranslationAiConfigurationName(): ?string
+    {
+        return null;
+    }
+
+    /**
+     * Specification:
+     * - Returns AI configuration name for image alt text generation defined in \Spryker\Shared\AiFoundation\AiFoundationConstants::AI_CONFIGURATIONS.
+     * - Returns null to use default AI configuration.
+     * - If null is returned, the default AI configuration will be used \Spryker\Shared\AiFoundation\AiFoundationConstants::AI_CONFIGURATION_DEFAULT
+     *
+     * @api
+     *
+     * @return string|null
+     */
+    public function getImageAltTextAiConfigurationName(): ?string
+    {
+        return null;
+    }
+
+    /**
+     * Specification:
+     * - Returns prompt template for AI content improvement.
+     *
+     * @api
+     *
+     * @return string
+     */
+    public function getContentImproverPromptTemplate(): string
+    {
+        return static::CONTENT_IMPROVER_PROMPT_TEMPLATE;
+    }
+
+    /**
+     * Specification:
+     * - Returns AI configuration name for content improvement defined in \Spryker\Shared\AiFoundation\AiFoundationConstants::AI_CONFIGURATIONS.
+     * - Returns null to use default AI configuration.
+     * - If null is returned, the default AI configuration will be used \Spryker\Shared\AiFoundation\AiFoundationConstants::AI_CONFIGURATION_DEFAULT
+     *
+     * @api
+     *
+     * @return string|null
+     */
+    public function getContentImproverAiConfigurationName(): ?string
+    {
+        return null;
     }
 }
