@@ -1,0 +1,145 @@
+<div class="all-ai-actions-popover modal-popover" popover="manual">
+    <div class="modal">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">{{ 'AI assistant' | trans }}</h4>
+                    <button type="button" class="btn-close" data-close-popover data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+
+                <div class="modal-body js-modal-body">
+                    <div class="ai-product-management-modal__content">
+                        <button type="button" class="btn btn-outline btn-lg btn-block text-left"
+                                data-target-popover=".translation-actions-popover"
+                                data-request-action="translation"
+                                data-request-url="/product-management-ai/translate">
+                            <svg class="btn__icon" xmlns="http://www.w3.org/2000/svg" height="20px"
+                                    viewBox="0 -960 960 960" width="20px" fill="currentColor">
+                                <path
+                                    d="m476-80 182-480h84L924-80h-84l-43-122H603L560-80h-84ZM160-200l-56-56 202-202q-35-35-63.5-80T190-640h84q20 39 40 68t48 58q33-33 68.5-92.5T484-720H40v-80h280v-80h80v80h280v80H564q-21 72-63 148t-83 116l96 98-30 82-122-125-202 201Zm468-72h144l-72-204-72 204Z"/>
+                            </svg>
+                            {{ 'Translate content' | trans }}
+                        </button>
+                        <button type="button"
+                            class="btn btn-outline btn-lg btn-block text-left"
+                            data-request-action="improve-description"
+                            data-request-url="/product-management-ai/content-improver"
+                            data-request-ready>
+                            <svg class="btn__icon" xmlns="http://www.w3.org/2000/svg" height="20px"
+                                    viewBox="0 -960 960 960" width="24px" fill="currentColor">
+                                <path
+                                    d="M206-206q-41-48-63.5-107.5T120-440q0-150 105-255t255-105h8l-64-64 56-56 160 160-160 160-57-57 63-63h-6q-116 0-198 82t-82 198q0 51 16.5 96t46.5 81l-57 57Zm234-14q0-23-15.5-45.5t-34.5-47q-19-24.5-34.5-51T340-420q0-58 41-99t99-41q58 0 99 41t41 99q0 30-15.5 56.5t-34.5 51q-19 24.5-34.5 47T520-220h-80Zm0 100v-60h80v60h-80Zm314-86-57-57q30-36 46.5-81t16.5-96q0-66-27.5-122.5T657-657l57-57q58 50 92 120.5T840-440q0 67-22.5 126.5T754-206Z"/>
+                            </svg>
+                            Improve content
+                        </button>
+                    </div>
+                </div>
+
+                <div class="modal-footer ai-product-management-modal__actions">
+                    <div class="modal-actions">
+                        <button type="button"
+                                class="js-ai-product-management-again btn btn-outline btn-view">{{ 'Try again' | trans }}</button>
+                        <button type="button"
+                                class="js-ai-product-management-apply btn">{{ 'Apply' | trans }}</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <button type="button" tabindex="-1" class="modal-backdrop"></button>
+    </div>
+</div>
+
+<div class="translation-actions-popover modal-popover" popover="manual">
+    <div class="modal">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">{{ 'AI assistant' | trans }}</h4>
+                    <button type="button" class="btn-close" data-close-popover data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+
+                <div class="modal-body js-modal-body">
+                    <div class="ai-product-management-modal__content">
+                        {% for locale in localeCollection %}
+                            <button type="button" class="btn btn-outline btn-lg btn-block text-left"
+                                    data-request-target-locale="{{ locale.localeName }}"
+                                    data-request-ready>
+                                        {{ locale.localeName }}
+                                    </button>
+                        {% endfor %}
+                    </div>
+                </div>
+
+                <div class="modal-footer ai-product-management-modal__actions">
+                    <div class="modal-actions">
+                        <button type="button"
+                                class="js-ai-product-management-again btn btn-outline btn-view">{{ 'Try again' | trans }}</button>
+                        <button type="button"
+                                class="js-ai-product-management-apply btn">{{ 'Apply' | trans }}</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <button type="button" tabindex="-1" class="modal-backdrop"></button>
+    </div>
+</div>
+
+<div class="loading-popover modal-popover ai-product-management-modal is-loading" popover="manual">
+    <div class="modal">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">{{ 'AI assistant' | trans }}</h4>
+                    <button type="button" class="btn-close" data-close-popover data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+
+                <div class="modal-body js-modal-body">
+                    <div class="ai-product-management-modal__loading">
+                        <span>{{ 'AI is processing your request' | trans }}</span>
+                        <span class="fa fa-spinner fa-spin"></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <button type="button" tabindex="-1" class="modal-backdrop"></button>
+    </div>
+</div>
+
+<div class="response-popover modal-popover" popover="manual">
+    <div class="modal">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">{{ 'AI assistant' | trans }}</h4>
+                    <button type="button" class="btn-close" data-close-popover data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+
+                <div class="modal-body js-modal-body">
+                     {% block loading %}
+                        <div class="ai-product-management-modal__loading">
+                            <span>{{ 'AI is processing your request' | trans }}</span>
+                            <span class="fa fa-spinner fa-spin"></span>
+                        </div>
+                    {% endblock %}
+
+                    <div class="ai-product-management-modal__content">
+                        <textarea id="response-field" class="form-control" name="" id="" cols="30" rows="10"></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer ai-product-management-modal__actions">
+                    <div class="modal-actions">
+                        <button type="button" class="js-ai-builder-again btn btn-outline btn-view">{{ 'Try again' | trans }}</button>
+                        <button type="button" class="js-ai-builder-apply btn">{{ 'Apply' | trans }}</button>
+                    </div>
+                </div>  
+            </div>
+        </div>
+
+        <button type="button" tabindex="-1" class="modal-backdrop"></button>
+    </div>
+</div>
+
+<script src="{{ assetsPath('js/ai-request-builder.js') }}"></script>
