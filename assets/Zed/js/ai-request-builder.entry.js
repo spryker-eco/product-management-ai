@@ -1,3 +1,4 @@
+require('../scss/main.scss') ;
 export default class AiRequestBuilder {
     constructor(
         requestUrl = '',
@@ -133,34 +134,27 @@ export default class AiRequestBuilder {
         };
         this.closePopovers();
         this.toggleLoadingPopover();
-        // fetch(this.requestUrl, requestOptions)
-        //     .then(response => response.json())
-        //     .then(data => {
-        //         console.log('Success:', data);
-        //         this.toggleLoadingPopover(false);
-        //         this.response = this.responseField.value = data || '';
-        //         this.toggleResponsePopover();
-        //     })
-        //     .catch((error) => {
-        //         console.error('Error:', error);
-        //         this.toggleLoadingPopover(false);
-        //     });
+        fetch(this.requestUrl, requestOptions)
+        .then(response => response.json())
+        .then(data => {
+            console.log('Success:', data);
+            this.toggleLoadingPopover(false);
+            document.getElementById('original-field').value = this.requestBody.text;
 
-        const data = {
-            translation: 'kdjfh lkjhdlk gjhdfklj ghdflkjg',
-            improvedText: 'kdjfh lkjhdlk gjhdfklj ghdflkjg',
-        }
-
-        this.toggleLoadingPopover(false);
-        switch(this.requestBody.action) {
-            case 'translation':
-                this.response = this.responseField.value = data.translation || '';
-                break;
-            default:
-                this.response = this.responseField.value = data.improvedText || '';
-                break;
-        }
-        this.toggleResponsePopover();
+            switch(this.requestBody.action) {
+                case 'translation':
+                    this.response = this.responseField.value = data.translation || '';
+                    break;
+                default:
+                    this.response = this.responseField.value = data.improvedText || '';
+                    break;
+            }
+            this.toggleResponsePopover();
+        })
+        .catch((error) => {
+            console.error('Error:', error);
+            this.toggleLoadingPopover(false);
+        });
     }
 
     toggleLoadingPopover(isVisible = true) {
