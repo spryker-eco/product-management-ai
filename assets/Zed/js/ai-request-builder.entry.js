@@ -10,6 +10,7 @@ export default class AiRequestBuilder {
         requestActionAttribute = 'data-request-action',
         requestUrlAttribute = 'data-request-url',
         requestTargetLocaleAttribute = 'data-request-target-locale',
+        errorBlock,
     ) {
         this.requestUrl = requestUrl;
         this.requestMethod = requestMethod;
@@ -29,6 +30,9 @@ export default class AiRequestBuilder {
         this.response = '';
         this.sourceFields = [];
         this.currentTargetFieldSelector = '';
+        this.errorBlock = document.querySelector('.js-ai-product-management-modal__error-block');
+        this.errorBlock.innerHTML = '';
+        this.errorBlock.display = 'none';
 
         this.init();
     }
@@ -135,26 +139,50 @@ export default class AiRequestBuilder {
         this.closePopovers();
         this.toggleLoadingPopover();
         fetch(this.requestUrl, requestOptions)
-        .then(response => response.json())
+        .then(response => {
+            return response.json().then(data => ({
+                status: response.status,
+                body: data
+            }));
+        })
         .then(data => {
-            console.log('Success:', data);
-            this.toggleLoadingPopover(false);
-            document.getElementById('original-field').value = this.requestBody.text;
-
-            switch(this.requestBody.action) {
-                case 'translation':
-                    this.response = this.responseField.value = data.translation || '';
+            switch(data.status)  {
+                case 400:
+                case 422:
+                    this.handleError(data.body.errors[0].message);
                     break;
                 default:
-                    this.response = this.responseField.value = data.improvedText || '';
+                    this.handleSuccess(data.body.errors[0])
                     break;
             }
-            this.toggleResponsePopover();
         })
         .catch((error) => {
             console.error('Error:', error);
             this.toggleLoadingPopover(false);
         });
+    }
+
+    handleSuccess(data) {
+        this.errorBlock.display = 'none';
+        this.toggleLoadingPopover(false);
+        document.getElementById('original-field').value = this.requestBody.text;
+
+        switch(this.requestBody.action) {
+            case 'translation':
+                this.response = this.responseField.value = data.translation || '';
+                break;
+            default:
+                this.response = this.responseField.value = data.improvedText || '';
+                break;
+        }
+        this.toggleResponsePopover();
+    }
+
+    handleError(message = '') {
+        this.errorBlock.innerHTML = message;
+        this.errorBlock.display = 'block';
+        this.toggleLoadingPopover(false);
+        this.toggleResponsePopover();
     }
 
     toggleLoadingPopover(isVisible = true) {
