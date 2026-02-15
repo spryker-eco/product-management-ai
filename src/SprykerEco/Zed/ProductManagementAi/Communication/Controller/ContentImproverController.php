@@ -78,6 +78,7 @@ class ContentImproverController extends AbstractController
         foreach ($errors as $errorTransfer) {
             $formatted[] = [
                 'message' => $errorTransfer->getMessageOrFail(),
+                'code' => $errorTransfer->getParameters()['code'] ?? null,
             ];
         }
 

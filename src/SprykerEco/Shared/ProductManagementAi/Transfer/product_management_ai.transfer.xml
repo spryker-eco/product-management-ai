@@ -42,28 +42,6 @@
         <property name="localeName" type="string"/>
     </transfer>
 
-    <transfer name="PromptRequest" strict="true">
-        <property name="promptMessage" type="PromptMessage"/>
-        <property name="aiConfigurationName" type="string" description="The configuration name of ai configuration"/>
-    </transfer>
-
-    <transfer name="PromptResponse">
-        <property name="message" type="PromptMessage"/>
-    </transfer>
-
-    <transfer name="PromptMessage">
-        <property name="content" type="string"/>
-        <property name="contentData" type="array" singular="contentData"/>
-        <property name="attachments" type="Attachment[]" singular="attachment"/>
-    </transfer>
-
-    <transfer name="Attachment">
-        <property name="type" type="string"/>
-        <property name="content" type="string"/>
-        <property name="contentType" type="string"/>
-        <property name="mediaType" type="string"/>
-    </transfer>
-
     <transfer name="CategorySuggestionRequest" strict="true">
         <property name="productName" type="string"/>
         <property name="productDescription" type="string"/>
@@ -117,6 +95,34 @@
 
     <transfer name="ContentImproverStructured" strict="true">
         <property name="improvedText" type="string" description="The improved and enhanced version of the original text with better clarity, grammar, and structure"/>
+    </transfer>
+
+    <transfer name="PromptRequest" strict="true">
+        <property name="promptMessage" type="PromptMessage"/>
+        <property name="structuredMessage" type="object" description="Transfer object that defines the schema for structured response from the LLM."/>
+        <property name="aiConfigurationName" type="string" description="The configuration name of ai configuration"/>
+        <property name="maxRetries" type="int" description="Maximum number of retry attempts for the request in case of failures. Defaults to 1."/>
+    </transfer>
+
+    <transfer name="PromptResponse" strict="true">
+        <property name="message" type="PromptMessage"/>
+        <property name="structuredMessage" type="object" description="Transfer object containing the structured response data returned by the LLM."/>
+        <property name="isSuccessful" type="bool" description="Indicates whether the prompt request was successful."/>
+        <property name="errors" type="Error[]" singular="error" description="List of errors encountered during the prompt request, if any."/>
+    </transfer>
+
+    <transfer name="PromptMessage" strict="true">
+        <property name="type" type="string" description="Message type: user, assistant, tool_call, or tool_result"/>
+        <property name="content" type="string"/>
+        <property name="contentData" type="array" singular="contentData"/>
+        <property name="attachments" type="Attachment[]" singular="attachment"/>
+    </transfer>
+
+    <transfer name="Attachment" strict="true">
+        <property name="type" type="string"/>
+        <property name="content" type="string"/>
+        <property name="contentType" type="string"/>
+        <property name="mediaType" type="string"/>
     </transfer>
 
 </transfers>

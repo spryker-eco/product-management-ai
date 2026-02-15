@@ -7,7 +7,7 @@
 
 namespace SprykerEco\Zed\ProductManagementAi\Business;
 
-use Spryker\Client\AiFoundation\AiFoundationClientInterface;
+use Spryker\Zed\AiFoundation\Business\AiFoundationFacadeInterface;
 use Spryker\Zed\Kernel\Business\AbstractBusinessFactory;
 use SprykerEco\Zed\ProductManagementAi\Business\Generator\ImageAltTextGenerator;
 use SprykerEco\Zed\ProductManagementAi\Business\Generator\ImageAltTextGeneratorInterface;
@@ -46,7 +46,7 @@ class ProductManagementAiBusinessFactory extends AbstractBusinessFactory
     public function createCategoryProposer(): CategoryProposerInterface
     {
         return new CategoryProposer(
-            $this->getAiFoundationClient(),
+            $this->getAiFoundationFacade(),
             $this->getUtilEncodingService(),
             $this->createCategoryReader(),
             $this->getConfig(),
@@ -59,7 +59,7 @@ class ProductManagementAiBusinessFactory extends AbstractBusinessFactory
     public function createImageAltTextGenerator(): ImageAltTextGeneratorInterface
     {
         return new ImageAltTextGenerator(
-            $this->getAiFoundationClient(),
+            $this->getAiFoundationFacade(),
             $this->getConfig(),
         );
     }
@@ -70,7 +70,7 @@ class ProductManagementAiBusinessFactory extends AbstractBusinessFactory
     public function createTranslator(): TranslatorInterface
     {
         return new Translator(
-            $this->getAiFoundationClient(),
+            $this->getAiFoundationFacade(),
             $this->getConfig(),
         );
     }
@@ -81,7 +81,7 @@ class ProductManagementAiBusinessFactory extends AbstractBusinessFactory
     public function createContentImprover(): ContentImproverInterface
     {
         return new ContentImprover(
-            $this->getAiFoundationClient(),
+            $this->getAiFoundationFacade(),
             $this->getConfig(),
         );
     }
@@ -111,10 +111,10 @@ class ProductManagementAiBusinessFactory extends AbstractBusinessFactory
     }
 
     /**
-     * @return \Spryker\Client\AiFoundation\AiFoundationClientInterface
+     * @return \Spryker\Zed\AiFoundation\Business\AiFoundationFacadeInterface
      */
-    public function getAiFoundationClient(): AiFoundationClientInterface
+    public function getAiFoundationFacade(): AiFoundationFacadeInterface
     {
-        return $this->getProvidedDependency(ProductManagementAiDependencyProvider::CLIENT_AI_FOUNDATION);
+        return $this->getProvidedDependency(ProductManagementAiDependencyProvider::FACADE_AI_FOUNDATION);
     }
 }

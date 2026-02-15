@@ -7,6 +7,7 @@
 
 namespace SprykerEco\Zed\ProductManagementAi\Business\Translator;
 
+use ArrayObject;
 use Exception;
 use Generated\Shared\Transfer\AiTranslationStructuredTransfer;
 use Generated\Shared\Transfer\AiTranslatorRequestTransfer;
@@ -15,15 +16,24 @@ use Generated\Shared\Transfer\ErrorTransfer;
 use Generated\Shared\Transfer\PromptMessageTransfer;
 use Generated\Shared\Transfer\PromptRequestTransfer;
 use Generated\Shared\Transfer\PromptResponseTransfer;
-use Spryker\Client\AiFoundation\AiFoundationClientInterface;
+use InvalidArgumentException;
+use Spryker\Shared\Log\LoggerTrait;
+use Spryker\Zed\AiFoundation\Business\AiFoundationFacadeInterface;
 use SprykerEco\Zed\ProductManagementAi\ProductManagementAiConfig;
 
 class Translator implements TranslatorInterface
 {
+    use LoggerTrait;
+
     /**
-     * @var \Spryker\Client\AiFoundation\AiFoundationClientInterface
+     * @var string
      */
-    protected AiFoundationClientInterface $aiFoundationClient;
+    protected const string OPERATION_NAME = 'translation';
+
+    /**
+     * @var \Spryker\Zed\AiFoundation\Business\AiFoundationFacadeInterface
+     */
+    protected AiFoundationFacadeInterface $aiFoundationFacade;
 
     /**
      * @var \SprykerEco\Zed\ProductManagementAi\ProductManagementAiConfig
@@ -31,14 +41,14 @@ class Translator implements TranslatorInterface
     protected ProductManagementAiConfig $productManagementAiConfig;
 
     /**
-     * @param \Spryker\Client\AiFoundation\AiFoundationClientInterface $aiFoundationClient
+     * @param \Spryker\Zed\AiFoundation\Business\AiFoundationFacadeInterface $aiFoundationFacade
      * @param \SprykerEco\Zed\ProductManagementAi\ProductManagementAiConfig $productManagementAiConfig
      */
     public function __construct(
-        AiFoundationClientInterface $aiFoundationClient,
+        AiFoundationFacadeInterface $aiFoundationFacade,
         ProductManagementAiConfig $productManagementAiConfig
     ) {
-        $this->aiFoundationClient = $aiFoundationClient;
+        $this->aiFoundationFacade = $aiFoundationFacade;
         $this->productManagementAiConfig = $productManagementAiConfig;
     }
 
@@ -51,6 +61,60 @@ class Translator implements TranslatorInterface
     {
         $aiTranslatorRequestTransfer = $this->normalizeSourceLocale($aiTranslatorRequestTransfer);
 
+        $promptRequestTransfer = $this->buildPromptRequest($aiTranslatorRequestTransfer);
+
+        try {
+            $promptResponseTransfer = $this->aiFoundationFacade->prompt($promptRequestTransfer);
+        } catch (InvalidArgumentException $exception) {
+            $this->logPromptError($exception, $promptRequestTransfer);
+
+            $promptResponseTransfer = $this->createErrorResponse(
+                $this->productManagementAiConfig->getErrorCodeAiProviderConfigMissing(),
+                sprintf(
+                    $this->productManagementAiConfig->getErrorMessageAiProviderConfigMissingTemplate(),
+                    static::OPERATION_NAME,
+                ),
+            );
+
+            return $this->mapPromptResponseToTranslatorResponse(
+                $promptResponseTransfer,
+                $aiTranslatorRequestTransfer,
+            );
+            // @phpstan-ignore-next-line catch.neverThrown - AI provider can throw other exceptions
+        } catch (Exception $exception) {
+            $this->logPromptError($exception, $promptRequestTransfer);
+
+            $promptResponseTransfer = $this->createErrorResponse(
+                $this->productManagementAiConfig->getErrorCodeAiProviderRequestError(),
+                sprintf(
+                    $this->productManagementAiConfig->getErrorMessageAiProviderRequestErrorTemplate(),
+                    static::OPERATION_NAME,
+                ),
+            );
+
+            return $this->mapPromptResponseToTranslatorResponse(
+                $promptResponseTransfer,
+                $aiTranslatorRequestTransfer,
+            );
+        }
+
+        if ($promptResponseTransfer->getIsSuccessful() === false) {
+            $promptResponseTransfer = $this->handleUnsuccessfulResponse($promptResponseTransfer, $promptRequestTransfer);
+        }
+
+        return $this->mapPromptResponseToTranslatorResponse(
+            $promptResponseTransfer,
+            $aiTranslatorRequestTransfer,
+        );
+    }
+
+    /**
+     * @param \Generated\Shared\Transfer\AiTranslatorRequestTransfer $aiTranslatorRequestTransfer
+     *
+     * @return \Generated\Shared\Transfer\PromptRequestTransfer
+     */
+    protected function buildPromptRequest(AiTranslatorRequestTransfer $aiTranslatorRequestTransfer): PromptRequestTransfer
+    {
         $promptContent = $this->buildTranslationRequestPrompt($aiTranslatorRequestTransfer);
         $structuredSchema = new AiTranslationStructuredTransfer();
 
@@ -66,24 +130,69 @@ class Translator implements TranslatorInterface
             $promptRequestTransfer->setAiConfigurationName($aiConfigurationName);
         }
 
-        try {
-            $promptResponseTransfer = $this->aiFoundationClient->prompt($promptRequestTransfer);
+        return $promptRequestTransfer;
+    }
 
-            return $this->mapPromptResponseToTranslatorResponse(
-                $promptResponseTransfer,
-                $aiTranslatorRequestTransfer,
+    /**
+     * @param \Exception $exception
+     * @param \Generated\Shared\Transfer\PromptRequestTransfer $promptRequestTransfer
+     *
+     * @return void
+     */
+    protected function logPromptError(Exception $exception, PromptRequestTransfer $promptRequestTransfer): void
+    {
+        $this->getLogger()->error($exception->getMessage(), [
+            'exception' => $exception,
+            'prompt' => $promptRequestTransfer->toArray(),
+        ]);
+    }
+
+    /**
+     * @param string $errorCode
+     * @param string $errorMessage
+     *
+     * @return \Generated\Shared\Transfer\PromptResponseTransfer
+     */
+    protected function createErrorResponse(string $errorCode, string $errorMessage): PromptResponseTransfer
+    {
+        return (new PromptResponseTransfer())
+            ->setIsSuccessful(false)
+            ->addError(
+                (new ErrorTransfer())
+                    ->setParameters(['code' => $errorCode])
+                    ->setMessage($errorMessage),
             );
-        } catch (Exception $exception) {
-            return (new AiTranslatorResponseTransfer())
-                ->setOriginalText($aiTranslatorRequestTransfer->getTextOrFail())
-                ->setSourceLocale($aiTranslatorRequestTransfer->getSourceLocaleOrFail())
-                ->setTargetLocale($aiTranslatorRequestTransfer->getTargetLocale())
-                ->setIsSuccessful(false)
-                ->addError(
-                    (new ErrorTransfer())
-                        ->setMessage($exception->getMessage()),
-                );
+    }
+
+    /**
+     * @param \Generated\Shared\Transfer\PromptResponseTransfer $promptResponseTransfer
+     * @param \Generated\Shared\Transfer\PromptRequestTransfer $promptRequestTransfer
+     *
+     * @return \Generated\Shared\Transfer\PromptResponseTransfer
+     */
+    protected function handleUnsuccessfulResponse(
+        PromptResponseTransfer $promptResponseTransfer,
+        PromptRequestTransfer $promptRequestTransfer
+    ): PromptResponseTransfer {
+        $errors = $promptResponseTransfer->getErrors();
+
+        foreach ($errors as $error) {
+            $this->getLogger()->error($error->getMessage() ?? '', [
+                'prompt' => $promptRequestTransfer->toArray(),
+                'response' => $promptResponseTransfer->toArray(),
+            ]);
         }
+
+        $promptResponseTransfer->setErrors(new ArrayObject([
+            (new ErrorTransfer())
+                ->setParameters(['code' => $this->productManagementAiConfig->getErrorCodeAiProviderRequestError()])
+                ->setMessage(sprintf(
+                    $this->productManagementAiConfig->getErrorMessageAiProviderRequestErrorTemplate(),
+                    static::OPERATION_NAME,
+                )),
+        ]));
+
+        return $promptResponseTransfer;
     }
 
     /**

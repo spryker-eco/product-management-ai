@@ -40,6 +40,26 @@ class ProductManagementAiConfig extends AbstractBundleConfig
         Text to improve: %s';
 
     /**
+     * @var string
+     */
+    protected const string ERROR_CODE_AI_PROVIDER_CONFIG_MISSING = 'AI_PROVIDER_CONFIG_MISSING';
+
+    /**
+     * @var string
+     */
+    protected const string ERROR_CODE_AI_PROVIDER_REQUEST_ERROR = 'AI_PROVIDER_REQUEST_ERROR';
+
+    /**
+     * @var string
+     */
+    protected const string ERROR_MESSAGE_AI_PROVIDER_CONFIG_MISSING_TEMPLATE = 'AI %s is not available because the AI provider is not configured.';
+
+    /**
+     * @var string
+     */
+    protected const string ERROR_MESSAGE_AI_PROVIDER_REQUEST_ERROR_TEMPLATE = 'AI %s is not available because an error occurred while trying to reach out to the AI provider.';
+
+    /**
      * @api
      *
      * @param string $locale
@@ -164,5 +184,59 @@ class ProductManagementAiConfig extends AbstractBundleConfig
     public function getContentImproverAiConfigurationName(): ?string
     {
         return null;
+    }
+
+    /**
+     * Specification:
+     * - Returns error code for missing AI provider configuration.
+     *
+     * @api
+     *
+     * @return string
+     */
+    public function getErrorCodeAiProviderConfigMissing(): string
+    {
+        return static::ERROR_CODE_AI_PROVIDER_CONFIG_MISSING;
+    }
+
+    /**
+     * Specification:
+     * - Returns error code for AI provider request errors.
+     *
+     * @api
+     *
+     * @return string
+     */
+    public function getErrorCodeAiProviderRequestError(): string
+    {
+        return static::ERROR_CODE_AI_PROVIDER_REQUEST_ERROR;
+    }
+
+    /**
+     * Specification:
+     * - Returns error message template for missing AI provider configuration.
+     * - Use sprintf with operation name to generate the final message.
+     *
+     * @api
+     *
+     * @return string
+     */
+    public function getErrorMessageAiProviderConfigMissingTemplate(): string
+    {
+        return static::ERROR_MESSAGE_AI_PROVIDER_CONFIG_MISSING_TEMPLATE;
+    }
+
+    /**
+     * Specification:
+     * - Returns error message template for AI provider request errors.
+     * - Use sprintf with operation name to generate the final message.
+     *
+     * @api
+     *
+     * @return string
+     */
+    public function getErrorMessageAiProviderRequestErrorTemplate(): string
+    {
+        return static::ERROR_MESSAGE_AI_PROVIDER_REQUEST_ERROR_TEMPLATE;
     }
 }

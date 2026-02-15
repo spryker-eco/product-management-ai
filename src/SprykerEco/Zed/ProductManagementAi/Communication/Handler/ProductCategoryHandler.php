@@ -42,21 +42,27 @@ class ProductCategoryHandler implements ProductCategoryHandlerInterface
      */
     public function updateProductCategories(ProductAbstractTransfer $productAbstractTransfer): ProductAbstractTransfer
     {
-        $assignedCategoryIds = $this->getCategoryIdsByIdProductAbstract($productAbstractTransfer->getIdProductAbstract());
+        $idProductAbstract = $productAbstractTransfer->getIdProductAbstract();
+        if ($idProductAbstract === null) {
+            return $productAbstractTransfer;
+        }
+
+        $assignedCategoryIds = $this->getCategoryIdsByIdProductAbstract($idProductAbstract);
         $categoryIdsToAssign = $productAbstractTransfer->getCategoryIds();
         $assignedCategoryIdsToSave = array_diff($categoryIdsToAssign, $assignedCategoryIds);
         $assignedCategoryIdsToDelete = array_diff($assignedCategoryIds, $categoryIdsToAssign);
+
         foreach ($assignedCategoryIdsToSave as $idCategory) {
             $this->productCategoryFacade->createProductCategoryMappings(
                 $idCategory,
-                [$productAbstractTransfer->getIdProductAbstract()],
+                [$idProductAbstract],
             );
         }
 
         foreach ($assignedCategoryIdsToDelete as $idCategory) {
             $this->productCategoryFacade->removeProductCategoryMappings(
                 $idCategory,
-                [$productAbstractTransfer->getIdProductAbstract()],
+                [$idProductAbstract],
             );
         }
 
@@ -70,10 +76,15 @@ class ProductCategoryHandler implements ProductCategoryHandlerInterface
      */
     public function createProductCategories(ProductAbstractTransfer $productAbstractTransfer): ProductAbstractTransfer
     {
+        $idProductAbstract = $productAbstractTransfer->getIdProductAbstract();
+        if ($idProductAbstract === null) {
+            return $productAbstractTransfer;
+        }
+
         foreach ($productAbstractTransfer->getCategoryIds() as $idCategory) {
             $this->productCategoryFacade->createProductCategoryMappings(
                 $idCategory,
-                [$productAbstractTransfer->getIdProductAbstract()],
+                [$idProductAbstract],
             );
         }
 
@@ -94,7 +105,10 @@ class ProductCategoryHandler implements ProductCategoryHandlerInterface
         );
         $categoryIds = [];
         foreach ($categoryCollectionTransfer->getCategories() as $categoryTransfer) {
-            $categoryIds[] = $categoryTransfer->getIdCategory();
+            $idCategory = $categoryTransfer->getIdCategory();
+            if ($idCategory !== null) {
+                $categoryIds[] = $idCategory;
+            }
         }
 
         return $categoryIds;
