@@ -32,7 +32,7 @@ export default class AiRequestBuilder {
         this.currentTargetFieldSelector = '';
         this.errorBlock = document.querySelector('.js-ai-product-management-modal__error-block');
         this.errorBlock.innerHTML = '';
-        this.errorBlock.display = 'none';
+        this.errorBlock.style.display = 'none';
 
         this.init();
     }
@@ -149,10 +149,10 @@ export default class AiRequestBuilder {
             switch(data.status)  {
                 case 400:
                 case 422:
-                    this.handleError(data.body.errors[0].message);
+                    this.handleError(data.body);
                     break;
                 default:
-                    this.handleSuccess(data.body.errors[0])
+                    this.handleSuccess(data.body)
                     break;
             }
         })
@@ -163,8 +163,9 @@ export default class AiRequestBuilder {
     }
 
     handleSuccess(data) {
-        this.errorBlock.display = 'none';
         this.toggleLoadingPopover(false);
+        this.toggleResponsePopover();
+        this.errorBlock.style.display = 'none';
         document.getElementById('original-field').value = this.requestBody.text;
 
         switch(this.requestBody.action) {
@@ -175,12 +176,14 @@ export default class AiRequestBuilder {
                 this.response = this.responseField.value = data.improvedText || '';
                 break;
         }
-        this.toggleResponsePopover();
+        
     }
 
-    handleError(message = '') {
-        this.errorBlock.innerHTML = message;
-        this.errorBlock.display = 'block';
+    handleError(error = '') {
+        const errorMessage = error.message || error.errors[0].message;
+
+        this.errorBlock.innerHTML = errorMessage;
+        this.errorBlock.style.display = 'block';
         this.toggleLoadingPopover(false);
         this.toggleResponsePopover();
     }
