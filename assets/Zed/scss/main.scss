@@ -36,6 +36,10 @@
         }
     }
 
+    .form-wrapper-clickable-affix__trigger {
+        padding: 0;
+    }
+
     &:has(.form-wrapper-clickable-affix__trigger:hover) .ai-translator {
         opacity: 1;
         visibility: visible;
@@ -94,6 +98,11 @@
         border: none;
         padding: 0;
         z-index: 10;
+
+        img {
+            pointer-events: none;
+            background: url('../img/ai-action-icon.svg') 0 0 / 0 0;
+        }
     }
 
     &__trigger-icon {
