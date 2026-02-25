@@ -25,6 +25,10 @@
                                 {% endif %}
                             {% endblock %}
 
+                            {% block error %}
+                                <div class="js-ai-product-management-modal__error ai-product-management-modal__error text-danger mb-2"></div>
+                            {% endblock %}
+
                             <div class="ai-product-management-modal__content">
                                 {% block content %}{% endblock %}
                             </div>

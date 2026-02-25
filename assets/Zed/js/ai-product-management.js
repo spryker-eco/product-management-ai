@@ -14,6 +14,7 @@ export class AiProductManagement {
     fieldElement = null;
     triggerSelector = null;
     url = null;
+    errorHolder = null;
 
     init() {
         document.addEventListener('click', (event) => {
@@ -35,12 +36,14 @@ export class AiProductManagement {
 
         this.modal.querySelector('.js-ai-product-management-apply').addEventListener('click', this.onApply);
         this.modal.querySelector('.js-ai-product-management-again').addEventListener('click', this.onAgain);
+        
     }
 
     onTriggerClick(event) {
         const trigger = event.currentTarget;
 
         this.modal = document.getElementById(trigger.getAttribute('popovertarget'));
+        this.errorHolder = this.modal.querySelector('.js-ai-product-management-modal__error');
         this.fieldElement = trigger.parentElement.querySelector(`${trigger.getAttribute('data-field-selector')}`);
         this.url = trigger.dataset.url;
 
@@ -55,6 +58,12 @@ export class AiProductManagement {
     onAgain() {
         this.modal.classList.add(this.states.loading);
         this.processAiAction();
+        this.errorHolder.innerText = '';
+    }
+
+    onError(error) {
+        this.errorHolder.innerText = error;
+        this.modal.classList.remove(this.states.loading);
     }
 
     preparePayload() {
