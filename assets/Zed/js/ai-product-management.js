@@ -44,6 +44,7 @@ export class AiProductManagement {
 
         this.modal = document.getElementById(trigger.getAttribute('popovertarget'));
         this.errorHolder = this.modal.querySelector('.js-ai-product-management-modal__error');
+        this.cleanError();
         this.fieldElement = trigger.parentElement.querySelector(`${trigger.getAttribute('data-field-selector')}`);
         this.url = trigger.dataset.url;
 
@@ -55,10 +56,14 @@ export class AiProductManagement {
         this.processAiAction();
     }
 
+    cleanError() {
+        this.errorHolder.innerText = '';
+    }
+
     onAgain() {
         this.modal.classList.add(this.states.loading);
         this.processAiAction();
-        this.errorHolder.innerText = '';
+        this.cleanError();
     }
 
     onError(error) {
