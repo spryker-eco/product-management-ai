@@ -106,7 +106,6 @@ export default class AiRequestBuilder {
                     this.currentTargetFieldSelector = this.currentTargetFieldSelector.replaceAll(this.requestBody.currentLocale, this.requestBody.locale);
                 }
                 this.sendRequest();
-                console.log(this.requestBody);
             })
         })
 
@@ -138,6 +137,9 @@ export default class AiRequestBuilder {
         };
         this.closePopovers();
         this.toggleLoadingPopover();
+        this.responseField.value = '';
+        document.getElementById('original-field').value = '';
+
         fetch(this.requestUrl, requestOptions)
         .then(response => {
             return response.json().then(data => ({
