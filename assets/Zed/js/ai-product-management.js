@@ -57,6 +57,7 @@ export class AiProductManagement {
     }
 
     cleanError() {
+        this.errorHolder.style.display = 'none';
         this.errorHolder.innerText = '';
     }
 
@@ -68,6 +69,7 @@ export class AiProductManagement {
 
     onError(error) {
         this.errorHolder.innerText = error;
+        this.errorHolder.style.display = 'block';
         this.modal.classList.remove(this.states.loading);
     }
 
