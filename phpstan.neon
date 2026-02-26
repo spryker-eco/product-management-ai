@@ -9,3 +9,4 @@ parameters:
         - '#Parameter .+ has invalid type .+Transfer#'
         - '#Call .+ on an unknown class .+AutoCompletion.#'
         - '#Access to constant .+ on an unknown class .+Transfer.#'
+        - '#Class Generated\\Shared\\Transfer\\.+StructuredTransfer not found#'

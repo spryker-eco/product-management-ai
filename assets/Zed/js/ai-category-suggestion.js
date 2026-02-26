@@ -38,17 +38,31 @@ export class AiCategorySuggestion extends AiProductManagement {
         select.replaceChildren();
 
         try {
-            const { categories } = await (await fetch(this.url, {
+            const response = await fetch(this.url, {
                 method: 'POST',
                 body: new URLSearchParams(this.data),
-            })).json();
-            const fragment = document.createDocumentFragment();
+            });
 
+
+            const responseData = await response.json();
+        
+            if (!response.ok) {
+                this.onError(responseData.errors[0].message);
+                return;
+            }
+        
+            const { categories } = responseData;
+            const fragment = document.createDocumentFragment();
+        
             for (const [text, id] of Object.entries(categories)) {
                 fragment.append(new Option(text, id, true, true));
             }
-
+        
             select.append(fragment);
+        
+        } catch (e) {
+            console.error(e);
+            
         } finally {
             this.modal.classList.remove(this.states.loading);
             select.dispatchEvent(new Event('change'));

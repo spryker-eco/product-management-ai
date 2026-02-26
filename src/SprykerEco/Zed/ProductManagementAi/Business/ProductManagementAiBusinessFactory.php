@@ -7,10 +7,12 @@
 
 namespace SprykerEco\Zed\ProductManagementAi\Business;
 
-use Spryker\Client\AiFoundation\AiFoundationClientInterface;
+use Spryker\Zed\AiFoundation\Business\AiFoundationFacadeInterface;
 use Spryker\Zed\Kernel\Business\AbstractBusinessFactory;
 use SprykerEco\Zed\ProductManagementAi\Business\Generator\ImageAltTextGenerator;
 use SprykerEco\Zed\ProductManagementAi\Business\Generator\ImageAltTextGeneratorInterface;
+use SprykerEco\Zed\ProductManagementAi\Business\Improver\ContentImprover;
+use SprykerEco\Zed\ProductManagementAi\Business\Improver\ContentImproverInterface;
 use SprykerEco\Zed\ProductManagementAi\Business\Proposer\CategoryProposer;
 use SprykerEco\Zed\ProductManagementAi\Business\Proposer\CategoryProposerInterface;
 use SprykerEco\Zed\ProductManagementAi\Business\Reader\CategoryReader;
@@ -44,7 +46,7 @@ class ProductManagementAiBusinessFactory extends AbstractBusinessFactory
     public function createCategoryProposer(): CategoryProposerInterface
     {
         return new CategoryProposer(
-            $this->getAiFoundationClient(),
+            $this->getAiFoundationFacade(),
             $this->getUtilEncodingService(),
             $this->createCategoryReader(),
             $this->getConfig(),
@@ -57,7 +59,7 @@ class ProductManagementAiBusinessFactory extends AbstractBusinessFactory
     public function createImageAltTextGenerator(): ImageAltTextGeneratorInterface
     {
         return new ImageAltTextGenerator(
-            $this->getAiFoundationClient(),
+            $this->getAiFoundationFacade(),
             $this->getConfig(),
         );
     }
@@ -68,7 +70,18 @@ class ProductManagementAiBusinessFactory extends AbstractBusinessFactory
     public function createTranslator(): TranslatorInterface
     {
         return new Translator(
-            $this->getAiFoundationClient(),
+            $this->getAiFoundationFacade(),
+            $this->getConfig(),
+        );
+    }
+
+    /**
+     * @return \SprykerEco\Zed\ProductManagementAi\Business\Improver\ContentImproverInterface
+     */
+    public function createContentImprover(): ContentImproverInterface
+    {
+        return new ContentImprover(
+            $this->getAiFoundationFacade(),
             $this->getConfig(),
         );
     }
@@ -98,10 +111,10 @@ class ProductManagementAiBusinessFactory extends AbstractBusinessFactory
     }
 
     /**
-     * @return \Spryker\Client\AiFoundation\AiFoundationClientInterface
+     * @return \Spryker\Zed\AiFoundation\Business\AiFoundationFacadeInterface
      */
-    public function getAiFoundationClient(): AiFoundationClientInterface
+    public function getAiFoundationFacade(): AiFoundationFacadeInterface
     {
-        return $this->getProvidedDependency(ProductManagementAiDependencyProvider::CLIENT_AI_FOUNDATION);
+        return $this->getProvidedDependency(ProductManagementAiDependencyProvider::FACADE_AI_FOUNDATION);
     }
 }

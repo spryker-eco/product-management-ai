@@ -42,7 +42,7 @@ class ProductManagementAiDependencyProvider extends AbstractBundleDependencyProv
     /**
      * @var string
      */
-    public const CLIENT_AI_FOUNDATION = 'CLIENT_AI_FOUNDATION';
+    public const FACADE_AI_FOUNDATION = 'FACADE_AI_FOUNDATION';
 
     /**
      * @param \Spryker\Zed\Kernel\Container $container
@@ -54,7 +54,7 @@ class ProductManagementAiDependencyProvider extends AbstractBundleDependencyProv
         $container = $this->addCategoryFacade($container);
         $container = $this->addLocaleFacade($container);
         $container = $this->addUtilEncodingService($container);
-        $container = $this->addAiFoundationClient($container);
+        $container = $this->addAiFoundationFacade($container);
 
         return $container;
     }
@@ -120,10 +120,10 @@ class ProductManagementAiDependencyProvider extends AbstractBundleDependencyProv
      *
      * @return \Spryker\Zed\Kernel\Container
      */
-    protected function addAiFoundationClient(Container $container): Container
+    protected function addAiFoundationFacade(Container $container): Container
     {
-        $container->set(static::CLIENT_AI_FOUNDATION, function (Container $container) {
-            return $container->getLocator()->aiFoundation()->client();
+        $container->set(static::FACADE_AI_FOUNDATION, function (Container $container) {
+            return $container->getLocator()->aiFoundation()->facade();
         });
 
         return $container;

@@ -72,7 +72,10 @@ class ProductCategoryAbstractFormDataProvider implements ProductCategoryAbstract
         );
         $categoryIds = [];
         foreach ($categoryCollectionTransfer->getCategories() as $categoryTransfer) {
-            $categoryIds[] = $categoryTransfer->getIdCategory();
+            $idCategory = $categoryTransfer->getIdCategory();
+            if ($idCategory !== null) {
+                $categoryIds[] = $idCategory;
+            }
         }
 
         return $categoryIds;

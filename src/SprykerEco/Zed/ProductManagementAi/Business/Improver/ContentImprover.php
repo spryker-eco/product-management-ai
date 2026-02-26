@@ -5,13 +5,13 @@
  * Use of this software requires acceptance of the Evaluation License Agreement. See LICENSE file.
  */
 
-namespace SprykerEco\Zed\ProductManagementAi\Business\Proposer;
+namespace SprykerEco\Zed\ProductManagementAi\Business\Improver;
 
 use ArrayObject;
 use Exception;
-use Generated\Shared\Transfer\CategorySuggestionRequestTransfer;
-use Generated\Shared\Transfer\CategorySuggestionResponseTransfer;
-use Generated\Shared\Transfer\CategorySuggestionStructuredTransfer;
+use Generated\Shared\Transfer\ContentImproverRequestTransfer;
+use Generated\Shared\Transfer\ContentImproverResponseTransfer;
+use Generated\Shared\Transfer\ContentImproverStructuredTransfer;
 use Generated\Shared\Transfer\ErrorTransfer;
 use Generated\Shared\Transfer\PromptMessageTransfer;
 use Generated\Shared\Transfer\PromptRequestTransfer;
@@ -19,33 +19,21 @@ use Generated\Shared\Transfer\PromptResponseTransfer;
 use InvalidArgumentException;
 use Spryker\Shared\Log\LoggerTrait;
 use Spryker\Zed\AiFoundation\Business\AiFoundationFacadeInterface;
-use SprykerEco\Zed\ProductManagementAi\Business\Reader\CategoryReaderInterface;
-use SprykerEco\Zed\ProductManagementAi\Dependency\Service\ProductManagementAiToUtilEncodingServiceInterface;
 use SprykerEco\Zed\ProductManagementAi\ProductManagementAiConfig;
 
-class CategoryProposer implements CategoryProposerInterface
+class ContentImprover implements ContentImproverInterface
 {
     use LoggerTrait;
 
     /**
      * @var string
      */
-    protected const string OPERATION_NAME = 'category suggestion';
+    protected const string OPERATION_NAME = 'content improvement';
 
     /**
      * @var \Spryker\Zed\AiFoundation\Business\AiFoundationFacadeInterface
      */
     protected AiFoundationFacadeInterface $aiFoundationFacade;
-
-    /**
-     * @var \SprykerEco\Zed\ProductManagementAi\Dependency\Service\ProductManagementAiToUtilEncodingServiceInterface
-     */
-    protected ProductManagementAiToUtilEncodingServiceInterface $utilEncodingService;
-
-    /**
-     * @var \SprykerEco\Zed\ProductManagementAi\Business\Reader\CategoryReaderInterface
-     */
-    protected CategoryReaderInterface $categoryReader;
 
     /**
      * @var \SprykerEco\Zed\ProductManagementAi\ProductManagementAiConfig
@@ -54,38 +42,25 @@ class CategoryProposer implements CategoryProposerInterface
 
     /**
      * @param \Spryker\Zed\AiFoundation\Business\AiFoundationFacadeInterface $aiFoundationFacade
-     * @param \SprykerEco\Zed\ProductManagementAi\Dependency\Service\ProductManagementAiToUtilEncodingServiceInterface $utilEncodingService
-     * @param \SprykerEco\Zed\ProductManagementAi\Business\Reader\CategoryReaderInterface $categoryReader
      * @param \SprykerEco\Zed\ProductManagementAi\ProductManagementAiConfig $productManagementAiConfig
      */
     public function __construct(
         AiFoundationFacadeInterface $aiFoundationFacade,
-        ProductManagementAiToUtilEncodingServiceInterface $utilEncodingService,
-        CategoryReaderInterface $categoryReader,
         ProductManagementAiConfig $productManagementAiConfig
     ) {
         $this->aiFoundationFacade = $aiFoundationFacade;
-        $this->utilEncodingService = $utilEncodingService;
-        $this->categoryReader = $categoryReader;
         $this->productManagementAiConfig = $productManagementAiConfig;
     }
 
     /**
-     * @param \Generated\Shared\Transfer\CategorySuggestionRequestTransfer $categorySuggestionRequestTransfer
+     * @param \Generated\Shared\Transfer\ContentImproverRequestTransfer $contentImproverRequestTransfer
      *
-     * @return \Generated\Shared\Transfer\CategorySuggestionResponseTransfer
+     * @return \Generated\Shared\Transfer\ContentImproverResponseTransfer
      */
-    public function proposeCategorySuggestions(
-        CategorySuggestionRequestTransfer $categorySuggestionRequestTransfer
-    ): CategorySuggestionResponseTransfer {
-        $categorySuggestionResponseTransfer = new CategorySuggestionResponseTransfer();
-
-        $categories = $this->categoryReader->getCategories();
-        if (!count($categories)) {
-            return $categorySuggestionResponseTransfer->setIsSuccessful(true);
-        }
-
-        $promptRequestTransfer = $this->buildPromptRequest($categorySuggestionRequestTransfer, $categories);
+    public function improveContent(
+        ContentImproverRequestTransfer $contentImproverRequestTransfer
+    ): ContentImproverResponseTransfer {
+        $promptRequestTransfer = $this->buildPromptRequest($contentImproverRequestTransfer);
 
         try {
             $promptResponseTransfer = $this->aiFoundationFacade->prompt($promptRequestTransfer);
@@ -100,9 +75,9 @@ class CategoryProposer implements CategoryProposerInterface
                 ),
             );
 
-            return $this->mapPromptResponseToCategorySuggestionResponse(
+            return $this->mapPromptResponseToContentImproverResponse(
                 $promptResponseTransfer,
-                $categorySuggestionResponseTransfer,
+                $contentImproverRequestTransfer,
             );
             // @phpstan-ignore-next-line catch.neverThrown - AI provider can throw other exceptions
         } catch (Exception $exception) {
@@ -116,9 +91,9 @@ class CategoryProposer implements CategoryProposerInterface
                 ),
             );
 
-            return $this->mapPromptResponseToCategorySuggestionResponse(
+            return $this->mapPromptResponseToContentImproverResponse(
                 $promptResponseTransfer,
-                $categorySuggestionResponseTransfer,
+                $contentImproverRequestTransfer,
             );
         }
 
@@ -126,29 +101,21 @@ class CategoryProposer implements CategoryProposerInterface
             $promptResponseTransfer = $this->handleUnsuccessfulResponse($promptResponseTransfer, $promptRequestTransfer);
         }
 
-        return $this->mapPromptResponseToCategorySuggestionResponse(
+        return $this->mapPromptResponseToContentImproverResponse(
             $promptResponseTransfer,
-            $categorySuggestionResponseTransfer,
+            $contentImproverRequestTransfer,
         );
     }
 
     /**
-     * @param \Generated\Shared\Transfer\CategorySuggestionRequestTransfer $categorySuggestionRequestTransfer
-     * @param array<string, int> $categories
+     * @param \Generated\Shared\Transfer\ContentImproverRequestTransfer $contentImproverRequestTransfer
      *
      * @return \Generated\Shared\Transfer\PromptRequestTransfer
      */
-    protected function buildPromptRequest(
-        CategorySuggestionRequestTransfer $categorySuggestionRequestTransfer,
-        array $categories
-    ): PromptRequestTransfer {
-        $promptContent = $this->generatePrompt(
-            $categorySuggestionRequestTransfer->getProductNameOrFail(),
-            $categorySuggestionRequestTransfer->getProductDescriptionOrFail(),
-            $categories,
-        );
-
-        $structuredSchema = new CategorySuggestionStructuredTransfer();
+    protected function buildPromptRequest(ContentImproverRequestTransfer $contentImproverRequestTransfer): PromptRequestTransfer
+    {
+        $promptContent = $this->buildContentImproverPrompt($contentImproverRequestTransfer);
+        $structuredSchema = new ContentImproverStructuredTransfer();
 
         $promptRequestTransfer = (new PromptRequestTransfer())
             ->setPromptMessage(
@@ -157,7 +124,7 @@ class CategoryProposer implements CategoryProposerInterface
             ->setStructuredMessage($structuredSchema)
             ->setMaxRetries(3);
 
-        $aiConfigurationName = $this->productManagementAiConfig->getCategorySuggestionAiConfigurationName();
+        $aiConfigurationName = $this->productManagementAiConfig->getContentImproverAiConfigurationName();
         if ($aiConfigurationName !== null) {
             $promptRequestTransfer->setAiConfigurationName($aiConfigurationName);
         }
@@ -228,51 +195,45 @@ class CategoryProposer implements CategoryProposerInterface
     }
 
     /**
-     * @param \Generated\Shared\Transfer\PromptResponseTransfer $promptResponseTransfer
-     * @param \Generated\Shared\Transfer\CategorySuggestionResponseTransfer $categorySuggestionResponseTransfer
-     *
-     * @return \Generated\Shared\Transfer\CategorySuggestionResponseTransfer
-     */
-    protected function mapPromptResponseToCategorySuggestionResponse(
-        PromptResponseTransfer $promptResponseTransfer,
-        CategorySuggestionResponseTransfer $categorySuggestionResponseTransfer
-    ): CategorySuggestionResponseTransfer {
-        $categorySuggestionResponseTransfer->setIsSuccessful($promptResponseTransfer->getIsSuccessful());
-
-        foreach ($promptResponseTransfer->getErrors() as $errorTransfer) {
-            $categorySuggestionResponseTransfer->addError($errorTransfer);
-        }
-
-        if (!$promptResponseTransfer->getIsSuccessful()) {
-            return $categorySuggestionResponseTransfer;
-        }
-
-        $structuredMessage = $promptResponseTransfer->getStructuredMessage();
-        if ($structuredMessage instanceof CategorySuggestionStructuredTransfer) {
-            foreach ($structuredMessage->getCategories() as $categorySuggestionItemTransfer) {
-                $categorySuggestionResponseTransfer->addSuggestion($categorySuggestionItemTransfer);
-            }
-        }
-
-        return $categorySuggestionResponseTransfer;
-    }
-
-    /**
-     * @param string $productName
-     * @param string $description
-     * @param array<string, int> $categories
+     * @param \Generated\Shared\Transfer\ContentImproverRequestTransfer $contentImproverRequestTransfer
      *
      * @return string
      */
-    protected function generatePrompt(string $productName, string $description, array $categories): string
+    protected function buildContentImproverPrompt(ContentImproverRequestTransfer $contentImproverRequestTransfer): string
     {
-        $categories = $this->utilEncodingService->encodeJson($categories);
-
         return sprintf(
-            $this->productManagementAiConfig->getProductCategorySuggestionPromptTemplate(),
-            $productName,
-            $description,
-            $categories,
+            $this->productManagementAiConfig->getContentImproverPromptTemplate(),
+            $contentImproverRequestTransfer->getTextOrFail(),
         );
+    }
+
+    /**
+     * @param \Generated\Shared\Transfer\PromptResponseTransfer $promptResponseTransfer
+     * @param \Generated\Shared\Transfer\ContentImproverRequestTransfer $contentImproverRequestTransfer
+     *
+     * @return \Generated\Shared\Transfer\ContentImproverResponseTransfer
+     */
+    protected function mapPromptResponseToContentImproverResponse(
+        PromptResponseTransfer $promptResponseTransfer,
+        ContentImproverRequestTransfer $contentImproverRequestTransfer
+    ): ContentImproverResponseTransfer {
+        $contentImproverResponseTransfer = (new ContentImproverResponseTransfer())
+            ->setOriginalText($contentImproverRequestTransfer->getTextOrFail())
+            ->setIsSuccessful($promptResponseTransfer->getIsSuccessful());
+
+        foreach ($promptResponseTransfer->getErrors() as $errorTransfer) {
+            $contentImproverResponseTransfer->addError($errorTransfer);
+        }
+
+        if (!$promptResponseTransfer->getIsSuccessful()) {
+            return $contentImproverResponseTransfer;
+        }
+
+        $structuredMessage = $promptResponseTransfer->getStructuredMessage();
+        if ($structuredMessage instanceof ContentImproverStructuredTransfer) {
+            $contentImproverResponseTransfer->setImprovedText($structuredMessage->getImprovedText());
+        }
+
+        return $contentImproverResponseTransfer;
     }
 }

@@ -7,6 +7,8 @@
 
 namespace SprykerEco\Zed\ProductManagementAi\Communication\Controller;
 
+use ArrayObject;
+use Generated\Shared\Transfer\ImageAltTextRequestTransfer;
 use Spryker\Zed\Kernel\Communication\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -29,54 +31,59 @@ class ImageAltTextController extends AbstractController
     protected const PARAM_LOCALE = 'locale';
 
     /**
-     * @var string
-     */
-    protected const PARAM_INVALIDATE_CACHE = 'invalidate_cache';
-
-    /**
-     * @var int
-     */
-    protected const STATUS_CODE_BAD_REQUEST = 400;
-
-    /**
      * @param \Symfony\Component\HttpFoundation\Request $request
      *
-     * @return \Symfony\Component\HttpFoundation\Response
+     * @return \Symfony\Component\HttpFoundation\JsonResponse
      */
-    public function indexAction(Request $request): Response
+    public function indexAction(Request $request): JsonResponse
     {
         $imageUrl = $request->get(static::PARAM_IMAGE_URL);
         $targetLocale = $request->get(static::PARAM_LOCALE);
 
         if (!$imageUrl || !$targetLocale) {
-            return $this->getErrorJsonResponse('ImageUrl and/or target locale are missing from request.');
+            return $this->jsonResponse(
+                [
+                    'error' => 'Bad request',
+                    'message' => 'ImageUrl and/or target locale are missing from request.',
+                ],
+                Response::HTTP_BAD_REQUEST,
+            );
         }
 
-        $promptResponseTransfer = $this->getFacade()->generateImageAltText($imageUrl, $targetLocale);
-        $altText = $promptResponseTransfer->getMessage()->getContent();
+        $imageAltTextRequestTransfer = (new ImageAltTextRequestTransfer())
+            ->setImageUrl($imageUrl)
+            ->setTargetLocale($targetLocale);
 
-        if (!$altText) {
-            return $this->getErrorJsonResponse('Unable to generate alt text for the provided image.');
+        $imageAltTextResponseTransfer = $this->getFacade()
+            ->generateImageAltText($imageAltTextRequestTransfer);
+
+        if (!$imageAltTextResponseTransfer->getIsSuccessful()) {
+            return $this->jsonResponse(
+                ['errors' => $this->formatErrors($imageAltTextResponseTransfer->getErrors())],
+                Response::HTTP_UNPROCESSABLE_ENTITY,
+            );
         }
 
         return $this->jsonResponse([
-            'altText' => $altText,
+            'altText' => $imageAltTextResponseTransfer->getAltTextOrFail(),
         ]);
     }
 
     /**
-     * @param string|null $errorMessage
+     * @param \ArrayObject<int, \Generated\Shared\Transfer\ErrorTransfer> $errors
      *
-     * @return \Symfony\Component\HttpFoundation\JsonResponse
+     * @return array<int, array<string, string>>
      */
-    protected function getErrorJsonResponse(?string $errorMessage): JsonResponse
+    protected function formatErrors(ArrayObject $errors): array
     {
-        return $this->jsonResponse(
-            [
-                'error' => 'Bad request',
-                'message' => $errorMessage,
-            ],
-            static::STATUS_CODE_BAD_REQUEST,
-        );
+        $formatted = [];
+        foreach ($errors as $errorTransfer) {
+            $formatted[] = [
+                'message' => $errorTransfer->getMessageOrFail(),
+                'code' => $errorTransfer->getParameters()['code'] ?? null,
+            ];
+        }
+
+        return $formatted;
     }
 }

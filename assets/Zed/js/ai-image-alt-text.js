@@ -34,13 +34,33 @@ export class AiImageAltText extends AiProductManagement {
 
         input.value = '';
 
-        try {
-            const { altText } = await (await fetch(this.url, {
-                method: 'POST',
-                body: new URLSearchParams(this.data),
-            })).json();
+        const data = new FormData();
 
-            input.value = decodeURI(altText || '');
+        data.append('imageUrl', this.data.imageUrl);
+        data.append('locale', this.data.locale);
+
+        if (this.data.cache) {
+            data.append('invalidate_cache', 1);
+        }
+
+        try {
+            const response = await fetch(this.url, {
+                method: 'POST',
+                body: data,
+            });
+
+            const responseData = await response.json();
+
+            if (!response.ok) {
+                this.onError(responseData.errors[0].message);
+
+                return;
+            }
+
+            input.value = decodeURI(responseData.altText || '');
+            this.data.cache = true;
+        } catch (e) {
+            console.error(e);
         } finally {
             this.modal.classList.remove(this.states.loading);
         }

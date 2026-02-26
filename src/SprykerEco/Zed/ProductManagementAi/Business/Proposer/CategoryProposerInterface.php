@@ -7,13 +7,17 @@
 
 namespace SprykerEco\Zed\ProductManagementAi\Business\Proposer;
 
+use Generated\Shared\Transfer\CategorySuggestionRequestTransfer;
+use Generated\Shared\Transfer\CategorySuggestionResponseTransfer;
+
 interface CategoryProposerInterface
 {
     /**
-     * @param string $productName
-     * @param string $description
+     * @param \Generated\Shared\Transfer\CategorySuggestionRequestTransfer $categorySuggestionRequestTransfer
      *
-     * @return array<string, int>
+     * @return \Generated\Shared\Transfer\CategorySuggestionResponseTransfer
      */
-    public function proposeCategorySuggestions(string $productName, string $description): array;
+    public function proposeCategorySuggestions(
+        CategorySuggestionRequestTransfer $categorySuggestionRequestTransfer
+    ): CategorySuggestionResponseTransfer;
 }
